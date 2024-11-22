@@ -1,4 +1,4 @@
-package gcd
+package rtl
 
 import chisel3._
 
