@@ -8,7 +8,12 @@ trait MyModule extends ScalaModule {
     coursier.MavenRepository("https://oss.sonatype.org/content/repositories/releases"),
     coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"),
   ) ++ super.repositoriesTask() }
-  def ivyDeps = Agg(ivy"org.chipsalliance::chisel:6.4.0")
+  def ivyDeps = Agg(
+    ivy"org.chipsalliance::chisel:6.4.0",
+    ivy"com.lihaoyi::mainargs:0.5.0",
+    ivy"com.lihaoyi::upickle:3.3.1",
+    ivy"com.lihaoyi::geny:1.1.1"
+  )
   def scalacPluginIvyDeps = Agg(
     ivy"org.chipsalliance:::chisel-plugin:6.2.0",
   )
@@ -17,6 +22,7 @@ trait MyModule extends ScalaModule {
     "-deprecation",
     "-feature",
     "-Xcheckinit",
+    "-Ymacro-annotations",
   )
 }
 
@@ -24,5 +30,5 @@ object rtl extends MyModule {
 }
 
 object elaborate extends MyModule {
-    def moduleDeps = Seq(rtl)
+  def moduleDeps = Seq(rtl)
 }
