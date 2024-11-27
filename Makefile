@@ -35,18 +35,24 @@ clean:
 	-rm -rf $(BUILD_DIR)
 
 .PHONY: test verilog help reformat checkformat clean
-VERILATOR_FLAGS = --trace --timing --threads 8 -O1 --main --build --exe -cc --top $(TOP)
-VSRCS = $(shell find $(abspath $(BUILD_DIR)) -name "*.v" -or -name "*.sv")
 TB_DIR = ./tb
+VERILATOR_FLAGS = --trace --timing --threads 8 -O1 --main --build --exe -cc --top $(TOP)
+VERILATOR_INC = -I$(abspath $(TB_DIR)/sv-tb)
+VSRCS = $(shell find $(abspath $(BUILD_DIR)) -name "*.v" -or -name "*.sv")
 SV_TB_DIR = $(TB_DIR)/sv-tb
-TB_SRCS = $(shell find $(abspath $(SV_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp")
+TB_SRCS = $(shell find $(abspath $(SV_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp" -or -name "*.cc" -or -name "*.c")
 OBJ_DIR = $(BUILD_DIR)/obj
-BIN = $(BUILD_DIR)/$(TOPNAME)
-sim-sv-verilator: $(TB_SRCS) $(VSRCS)
+BIN = $(OBJ_DIR)/V$(TOP)
+VCD_FILE = $(BUILD_DIR)/wave.vcd
+sim-sv-verilator: $(TB_SRCS) $(VSRCS) verilog
 	$(call git_commit, "sim RTL")
 	verilator $(VERILATOR_FLAGS) \
+		$(VERILATOR_INC) \
 		-Mdir $(OBJ_DIR) \
-		$^
+		$(TB_SRCS) $(VSRCS)
+	$(BIN)
+wave: 
+	gtkwave $(VCD_FILE) &
 
 sim-sv-vcs:
 sim-sv-iverilog:
