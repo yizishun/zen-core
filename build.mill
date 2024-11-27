@@ -1,4 +1,5 @@
 package build
+import os.Path
 import mill._, scalalib._
 
 trait MyModule extends ScalaModule {
@@ -29,6 +30,17 @@ trait MyModule extends ScalaModule {
 object rtl extends MyModule {
 }
 
-object elaborate extends MyModule {
+object elaborateRTL extends MyModule {
   def moduleDeps = Seq(rtl)
+
+  override def mainClass = Some("elaborate.Elaborate")
+}
+
+object tb extends MyModule {
+  override def millSourcePath: Path = os.pwd / "tb" / "chisel-tb"
+  def moduleDeps = Seq(rtl)
+}
+
+object elaborateTB extends MyModule {
+  def moduleDeps = Seq(tb)
 }
