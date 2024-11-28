@@ -1,6 +1,3 @@
-VCS_DIR = $(BUILD_DIR)/vcs
-VCS_OBJDIR = $(VCS_DIR)/obj
-VCS_BIN = $(VCS_DIR)/simv
 VCS_INC = +incdir+$(abspath $(TB_DIR)/sv-tb)
 sim-sv-vcs:
 	$(call git_commit, "sim RTL")
@@ -10,7 +7,7 @@ sim-sv-vcs:
 	 	-sverilog \
 		$(VCS_INC) \
 		-Mdir=$(VCS_OBJDIR) \
-		$(TB_SRCS) $(VSRCS)
+		$(SV_TB_SRCS) $(VSRCS)
 	$(VCS_BIN)
 	$(VERDI_HOME)/bin/fsdb2vcd $(BUILD_DIR)/wave.fsdb -o $(VCD_FILE)
 	rm -rf $(VCS_DIR)/fsdb2vcdLog
