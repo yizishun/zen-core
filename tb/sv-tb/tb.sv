@@ -6,7 +6,7 @@ module TB(
     clk_if _cif ();
     gcd_if _if();
     // dump wave
-    string file = "./build/wave.vcd";
+    string file = "./build/wave";
     initial begin
     `ifdef VCS
         $fsdbDumpfile(file);

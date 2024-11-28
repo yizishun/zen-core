@@ -10,8 +10,6 @@ class driver;
     mailbox #(item)drv_mbx;
 
     task run();
-        $dumpvars(0, vif);
-        $display("%t [Driver]: started", $realtime);
         @(posedge vcif.clock)
 
         // Try to get a new transaction every time and then assign
