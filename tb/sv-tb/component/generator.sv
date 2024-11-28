@@ -19,8 +19,6 @@ class generator;
             drv_mbx.put(itm);
             @(drv_done);
         end
-        $display ("%t [Generator] Done generation of %0d items", $realtime, num);
-        $finish;
     endtask
 endclass
 `endif

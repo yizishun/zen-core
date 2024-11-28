@@ -45,6 +45,7 @@ class env;
             d0.run();
             m0.run();
             sb0.run();
+            #1000 $finish;
         join
     endtask
 endclass

@@ -2,7 +2,7 @@
 #include <numeric>
 
 extern "C" {
-    int gcd(int a, int b) {
+    int gcd(unsigned int a,unsigned int b) {
         while (b != 0) {
             int temp = b;
             b = a % b;
@@ -10,7 +10,7 @@ extern "C" {
         }
         return a;
     }
-    void ref_generate(int a, int b, int* c){
+    void ref_generate(unsigned int a,unsigned int b,unsigned int* c){
         *c = gcd(a, b);
     }
 }

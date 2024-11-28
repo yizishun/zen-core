@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 `include "test.sv"
 module TB(
 );
@@ -43,15 +43,15 @@ module TB(
     test t0;
     initial begin
         t0 = new;
+        t0.e0.g0.num = 5;
         t0.e0.vif = _if;
         t0.e0.vcif = _cif;
         t0.run();
     end
     //debug print
     initial begin
-        #0.1;
         forever begin
-            #1 _if.print("INTERFACE"); _cif.print("CLOCK");
+            #1 _if.print("INTERFACE");
         end
     end
     

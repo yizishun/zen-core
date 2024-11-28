@@ -19,7 +19,6 @@ class driver;
             item itm;
             $display("%t [Driver]: waiting for itm", $realtime);
             @(posedge vcif.clock);
-            #0.2;
             if(!vif.reset)begin
                 if(vif.in_ready)begin
                     drv_mbx.get(itm);

@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 `ifndef UTILS_SV
 `define UTILS_SV
 task dumpWave(input string file);
