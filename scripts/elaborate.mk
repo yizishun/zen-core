@@ -2,18 +2,21 @@
 RTL_DIR = $(BUILD_DIR)/rtl
 ELABORATE_DIR = $(RTL_DIR)/elaborate
 CONFIG_DIR = ./config
+FIR_FILES = $(shell find $(abspath $(ELABORATE_DIR)) -name "*.fir")
+SV_FILES := $(foreach file,$(FIR_FILES),$(RTL_DIR)/$(basename $(notdir $(file))).sv)
 config:
 	mkdir -p $(CONFIG_DIR)
-	mill -i elaborateRTL.run config --width 32 --useAsyncReset true --target-dir config
+	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) config --width 32 --useAsyncReset true --target-dir config
 
 fir: config
 	mkdir -p $(ELABORATE_DIR)
-	mill -i elaborateRTL.run design --target-dir $(ELABORATE_DIR) --parameter ./config/GCD.json
-
+	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(ELABORATE_DIR) --parameter ./config/$(DESIGN_UP).json
 
 verilog: fir
-	firtool $(ELABORATE_DIR)/GCD.fir -o $(RTL_DIR)/GCD.v
-
+	mkdir -p $(RTL_DIR)
+	for file in $(FIR_FILES); do \
+		firtool $$file -o $(RTL_DIR)/$$(basename $$file .fir).sv; \
+	done
 
 help:
 	mill -i elaborateRTL.run --help

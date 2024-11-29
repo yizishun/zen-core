@@ -1,7 +1,7 @@
 TOP := TB
 BUILD_DIR = ./build
 SCRIPTS_DIR = ./scripts
-TB_DIR = ./tb
+TB_DIR = ./tb-$(DESIGN)
 
 #common files
 VSRCS = $(shell find $(abspath $(BUILD_DIR)) -name "*.v" -or -name "*.sv")
@@ -26,8 +26,11 @@ VERILATOR_BIN = $(VERILATOR_DIR)/V$(TOP)
 VCS_DIR = $(BUILD_DIR)/vcs
 VCS_OBJDIR = $(VCS_DIR)/obj
 VCS_BIN = $(VCS_DIR)/simv
+VCS_FLAGS = vcs -full64 -timescale=1ns/1ns -debug_access+all -l $(VCS_DIR)/vcs.log -o $(VCS_BIN) -sverilog -Mdir=$(VCS_OBJDIR)
 
 #--------------------disgn specific------------------
+DESIGN := gcd
+DESIGN_UP = $(shell echo $(DESIGN) | tr '[:lower:]' '[:upper:]')
 
 # include scripts
 include $(SCRIPTS_DIR)/elaborate.mk
