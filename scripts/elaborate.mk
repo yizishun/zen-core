@@ -10,7 +10,7 @@ config:
 
 fir: config
 	mkdir -p $(ELABORATE_DIR)
-	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(ELABORATE_DIR) --parameter ./config/$(DESIGN_UP).json
+	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(ELABORATE_DIR) --parameter ./config/$(DESIGN).json
 
 verilog: fir
 	mkdir -p $(RTL_DIR)

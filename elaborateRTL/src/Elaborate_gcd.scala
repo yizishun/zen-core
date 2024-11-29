@@ -12,7 +12,7 @@ package elaborate
 import mainargs._
 import rtl._
 
-object Elaborate_gcd extends SerializableModuleElaborator {
+object Elaborate_GCD extends SerializableModuleElaborator {
   val topName = "GCD"
 
   implicit object PathRead extends TokensReader.Simple[os.Path] {

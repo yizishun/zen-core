@@ -26,11 +26,10 @@ VERILATOR_BIN = $(VERILATOR_DIR)/V$(TOP)
 VCS_DIR = $(BUILD_DIR)/vcs
 VCS_OBJDIR = $(VCS_DIR)/obj
 VCS_BIN = $(VCS_DIR)/simv
-VCS_FLAGS = vcs -full64 -timescale=1ns/1ns -debug_access+all -l $(VCS_DIR)/vcs.log -o $(VCS_BIN) -sverilog -Mdir=$(VCS_OBJDIR)
+VCS_FLAGS = -full64 -timescale=1ns/1ns -debug_access+all -l $(VCS_DIR)/vcs.log -o $(VCS_BIN) -sverilog -Mdir=$(VCS_OBJDIR)
 
 #--------------------disgn specific------------------
-DESIGN := gcd
-DESIGN_UP = $(shell echo $(DESIGN) | tr '[:lower:]' '[:upper:]')
+DESIGN := GCD
 
 # include scripts
 include $(SCRIPTS_DIR)/elaborate.mk
