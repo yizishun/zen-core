@@ -15,9 +15,15 @@
 !build.mill
 !README.md
 !tb/
+!tb-GCD/
 !constr/
+!config/
+!*.json
 !*.xdc
 build/
+.vscode/
+.bloop/
+.metals/
 
 # mill
 out/

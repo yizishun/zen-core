@@ -4,6 +4,8 @@ ELABORATE_DIR = $(RTL_DIR)/elaborate
 CONFIG_DIR = ./config
 FIR_FILES = $(shell find $(abspath $(ELABORATE_DIR)) -name "*.fir")
 SV_FILES := $(foreach file,$(FIR_FILES),$(RTL_DIR)/$(basename $(notdir $(file))).sv)
+FIRTOOL_OPTION = --lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket
+
 config:
 	mkdir -p $(CONFIG_DIR)
 	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) config --width 32 --useAsyncReset true --target-dir config
@@ -15,7 +17,7 @@ fir: config
 verilog: fir
 	mkdir -p $(RTL_DIR)
 	for file in $(FIR_FILES); do \
-		firtool $$file -o $(RTL_DIR)/$$(basename $$file .fir).sv; \
+		firtool $(FIRTOOL_OPTION) $$file -o $(RTL_DIR)/$$(basename $$file .fir).sv; \
 	done
 
 help:
