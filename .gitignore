@@ -9,6 +9,7 @@
 !*.sv
 !*.cpp
 !*.cc
+!*.sh
 !.gitignore
 !.scalafmt.conf
 !build.sc
@@ -20,6 +21,7 @@
 !config/
 !*.json
 !*.xdc
+!tb-GCD/uvm-tb/uvm-verilator
 build/
 .vscode/
 .bloop/

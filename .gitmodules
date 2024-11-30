@@ -1,0 +1,3 @@
+[submodule "uvm-verilator"]
+	path = uvm-verilator
+	url = git@github.com:antmicro/uvm-verilator.git

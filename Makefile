@@ -35,7 +35,7 @@ CPP_TB_INC = -I$(CPP_TB_DIR)/include
 # 3, {simulator name}_BIN : simulator binary
 # verilator specific
 VERILATOR_DIR = $(BUILD_DIR)/verilator
-VERILATOR_FLAGS = --trace --timing --threads 8 -O1 --build --exe -cc --top $(TOP) -Mdir $(VERILATOR_DIR)
+VERILATOR_FLAGS = --trace --timing --threads 8 -O1 --build --exe -cc --top $(TOP) -Mdir $(VERILATOR_DIR) -CFLAGS -std=c++20
 VERILATOR_BIN = $(VERILATOR_DIR)/V$(TOP)
 
 # vcs specific
@@ -45,7 +45,7 @@ VCS_OBJDIR = $(VCS_DIR)/obj
 VCS_BIN = $(VCS_DIR)/simv
 
 #--------------------disgn specific------------------
-DESIGN := GCD #can be overrided in command line
+DESIGN := GCD#can be overrided in command line
 
 # include scripts
 include $(SCRIPTS_DIR)/elaborate.mk
@@ -58,9 +58,13 @@ include $(SCRIPTS_DIR)/sim-cpp-verilator.mk
 
 include $(SCRIPTS_DIR)/sim-uvm-vcs.mk
 
+include $(SCRIPTS_DIR)/sim-uvm-verilator.mk
+
 vcd: 
 	gtkwave $(VCD_FILE) &
 
+
+	
 
 sim-chisel-verilator:
 sim-chisel-vcs:

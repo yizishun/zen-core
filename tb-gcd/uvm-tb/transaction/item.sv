@@ -19,8 +19,9 @@ class item extends uvm_sequence_item;
     return $sformatf("x=0x%0d y=0x%0d out=0x%0d", x, y, out);
   endfunction
 
-  function new(string name = "reg_item");
+  function new(string name = "item");
     super.new(name);
   endfunction
 endclass
+
 `endif
