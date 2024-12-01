@@ -1,31 +1,51 @@
-Chisel Project Template
+Digital Design/verify Template
 =======================
+This is a template or framework include digital design and verification
 
-Another version of the [Chisel template](https://github.com/ucb-bar/chisel-template) supporting mill.
-mill is another Scala/Java build tool without obscure DSL like SBT. It is much faster than SBT.
+# Design
+This template is originnally built from chisel-playground
+So, Digital design is use chisel HDL language
+## Write Chisel
+* Pls use serializableModule and serializableParameter to construcr module. refer to gcd example to know(actually you can just relace `GCD` to your module name, and change the impl)
+* Write in `./rtl/src`
+* Write module parameter in `./config`, in json format. And the file name is corresponding module name which will be elaborated
+## Elaborate Chisel
+* Write corresponding(top level) module elaborate code in `./elaborateRTL`
+* Naming the elaborate class `Elaborate_{module name}`(pls read the `./script/elaborate.mk` to know why)
+* Use serializableElaborate extend your class 
+* Other modify pls refer `./elaborate/Elaborate_gcd.scala` (actually you can just relace `GCD` to your module name, and change the impl)
+* Finally, use `make verilog` to get the verilog, use `make fir` to get the firrtl
 
-Contents at a glance:
+You can override the variable DESIGN in command line to elaborate and verify different Design
 
-* `.gitignore` - helps Git ignore junk like generated files, build products, and temporary files.
-* `build.sc` - instructs mill to build the Chisel project
-* `Makefile` - rules to call mill
-* `playground/src/GCD.scala` - GCD source file
-* `playground/src/DecoupledGCD.scala` - another GCD source file
-* `playground/src/Elaborate.scala` - wrapper file to call chisel command with the GCD module
-* `playground/test/src/GCDSpec.scala` - GCD tester
+# Verify
+The template support lots of testbench framework(language) and lots of simulator
 
-Feel free to rename or delete files under `playground/` or use them as a reference/template.
+For corresponding target, use `make sim-{tb}-{simulator}` to run
 
-## Getting Started
+Write TestBench in `tb/tb-{DEIGN}`
 
-First, install mill by referring to the documentation [here](https://com-lihaoyi.github.io/mill).
+(Before use vcs, make sure you already define `VCS_HOME` and `VERDI_HOME`)
+## UVM
+uvm support:
+`make sim-uvm-vcs`
+`make sim-uvm-verilator`(have bugs, because verilator is not fully support SystemVerilog, i support it use `uvm-verialtor`)
 
-To run all tests in this design (recommended for test-driven development):
-```bash
-make test
-```
+## SV
+Similar to UVM, support:
+`make sim-sv-vcs`
+`make sim-uvm-verilator`(have some dump wave bugs)
 
-To generate Verilog:
-```bash
-make verilog
-```
+## C++
+Only for verilator:
+`make sim-cpp-verilator`
+
+## COCOTB
+support lots of simulator:
+`make sim-python-iverilog`
+`make sim-python-verilator`
+`make sim-python-vcs` (not test, dont use)
+cocotb is useful for small design verification (for example, sub module in a Core)
+
+## Chisel
+under deveplopment(this should use the main branch chisel to support) (it is not chisel test, it is acually use chisel to write tb and elaborate to verilog/sv)
