@@ -10,6 +10,9 @@
 !*.cpp
 !*.cc
 !*.sh
+!*.py
+!*.json
+!*.xdc
 !.gitignore
 !.scalafmt.conf
 !build.sc
@@ -17,11 +20,12 @@
 !README.md
 !tb/
 !tb-GCD/
+tb-GCD/python-tb/sim_build
 !constr/
 !config/
-!*.json
-!*.xdc
 !tb-GCD/uvm-tb/uvm-verilator
+!poetry.lock
+!pyproject.toml
 build/
 verilator_obj_dir
 .vscode/
