@@ -1,8 +1,3 @@
-`ifndef TEST_SV
-`define TEST_SV
-`include "include.sv"
-`include "component/env.sv"
-
 class test extends uvm_test;
   `uvm_component_utils(test)
   function new(string name = "test", uvm_component parent=null);
@@ -29,7 +24,7 @@ class test extends uvm_test;
     phase.raise_objection(this);
     apply_reset();
 
-    seq.randomize() with {num inside {[5:10]}; };
+    assert(seq.randomize() with {num inside {[5:10]};})
     seq.start(e0.a0.s0);
     #1000;
     phase.drop_objection(this);
@@ -42,4 +37,3 @@ class test extends uvm_test;
     repeat(10) @ (posedge vcif.clock);
   endtask
 endclass
-`endif

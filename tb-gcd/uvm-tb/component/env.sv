@@ -1,7 +1,3 @@
-`ifndef ENV_SV
-`define ENV_SV
-`include "include.sv"
-`include "component/agent.sv"
 class env extends uvm_env;
   `uvm_component_utils(env)
   function new(string name="env", uvm_component parent=null);
@@ -22,4 +18,3 @@ class env extends uvm_env;
     a0.m0.mon_ap.connect(s0.ap_imp);
   endfunction
 endclass
-`endif

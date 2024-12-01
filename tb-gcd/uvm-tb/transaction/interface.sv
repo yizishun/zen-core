@@ -1,5 +1,3 @@
-`ifndef INTERFACE_SV
-`define INTERFACE_SV
 interface gcd_if ();
     logic reset;
     logic [31:0] x, y;
@@ -28,4 +26,3 @@ interface clk_if();
         $display("%t [%s] clock=%b", $realtime, tag, clock);
     endfunction
 endinterface
-`endif

@@ -1,4 +1,3 @@
-
 RTL_DIR = $(BUILD_DIR)/rtl
 ELABORATE_DIR = $(RTL_DIR)/elaborate
 CONFIG_DIR = ./config

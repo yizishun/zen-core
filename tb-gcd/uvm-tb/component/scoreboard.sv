@@ -1,5 +1,3 @@
-`ifndef __SCOREBOARD_SV
-`define __SCOREBOARD_SV
 import "DPI-C" function void ref_generate(input int x, input int y, output int out);
 class scoreboard extends uvm_scoreboard;
   `uvm_component_utils(scoreboard)
@@ -25,4 +23,3 @@ class scoreboard extends uvm_scoreboard;
     end
   endtask
 endclass
-`endif

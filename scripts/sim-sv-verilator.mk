@@ -1,4 +1,4 @@
-#this have bugs
+#this have dump wave bugs
 sim-sv-verilator: $(SV_TB_SRCS) $(VSRCS) verilog
 	$(call git_commit, "sim RTL")
 	$(eval VERILATOR_INC := -I$(abspath $(TB_DIR)/sv-tb))

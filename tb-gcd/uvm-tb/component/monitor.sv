@@ -1,5 +1,3 @@
-`ifndef MONITOR_SV
-`define MONITOR_SV
 class monitor extends uvm_monitor;
   `uvm_component_utils(monitor)
   function new (string name = "monitor", uvm_component parent = null);
@@ -45,4 +43,3 @@ class monitor extends uvm_monitor;
         end
     endtask
 endclass
-`endif

@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
-`include "component/test.sv"
 module TB(
 );
+  import gcd_pkg::*;
+  import uvm_pkg::*;
   //interface
   gcd_if _if();
   clk_if _cif ();
@@ -17,7 +18,6 @@ module TB(
     `ifdef VERILATOR
         $dumpfile(file);
         $dumpvars(0, TB);
-        $dumpvars(0, _if.x);
     `endif
   end
   //DUT
@@ -36,7 +36,11 @@ module TB(
   initial begin
     uvm_config_db#(virtual gcd_if)::set(null, "uvm_test_top", "gcd_if", _if);
     uvm_config_db#(virtual clk_if)::set(null, "*", "clk_if", _cif);
+    `ifdef VERILATOR
+    run_test();
+    `else
     run_test("test");
+    `endif
   end
   //debug print
   initial begin
@@ -46,4 +50,5 @@ module TB(
   end
   
 endmodule //TB
+
 

@@ -23,6 +23,7 @@
 !*.xdc
 !tb-GCD/uvm-tb/uvm-verilator
 build/
+verilator_obj_dir
 .vscode/
 .bloop/
 .metals/

@@ -120,7 +120,9 @@ DISABLED_WARNINGS="-Wno-DECLFILENAME \
                    -Wno-SYMRSVDWORD \
                    -Wno-CASEINCOMPLETE \
                    -Wno-SIDEEFFECT \
-                   -Wno-REALCVT"
+                   -Wno-REALCVT \
+                   -Wno-TIMESCALEMOD \
+                   -Wno-IGNOREDRETURN"
 
 # compile
  verilator \
@@ -132,7 +134,8 @@ DISABLED_WARNINGS="-Wno-DECLFILENAME \
      --error-limit 5 \
      --binary \
      --hierarchical \
-     -j 1 \
+     --trace \
+     -j 8 \
      -Wall \
      -CFLAGS -std=c++20 \
      $DISABLED_WARNINGS \
@@ -143,18 +146,10 @@ DISABLED_WARNINGS="-Wno-DECLFILENAME \
      +incdir+$TB_DIR \
      $UVM_PKG \
      /Users/yizishun/chisel-playground/build/rtl/GCD.sv \
+     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/gcd_pkg.sv \
      /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/transaction/interface.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/transaction/item.sv \
      /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/tb.sv \
      /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/clib/check.cpp \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/scoreboard.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/monitor.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/env.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/test.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/generator.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/agent.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/component/driver.sv \
-     /Users/yizishun/chisel-playground/tb-GCD/uvm-tb/include.sv
 
 # run
 ./verilator_obj_dir/Vuvm_pkg +UVM_TESTNAME=$OPT_TESTNAME

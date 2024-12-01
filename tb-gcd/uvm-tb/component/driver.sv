@@ -1,5 +1,3 @@
-`ifndef DRIVER_SV
-`define DRIVER_SV
 class driver extends uvm_driver #(item);
   `uvm_component_utils(driver)
   function new (string name = "driver", uvm_component parent = null);
@@ -54,4 +52,3 @@ class driver extends uvm_driver #(item);
     end
     endtask
 endclass
-`endif

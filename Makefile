@@ -15,7 +15,8 @@ VCD_FILE = $(BUILD_DIR)/wave.vcd
 # 3, {language name}_TB_INC : include path
 #uvm tb specific
 UVM_TB_DIR = $(TB_DIR)/uvm-tb
-UVM_TB_SRCS = $(shell find $(abspath $(UVM_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp" -or -name "*.cc" -or -name "*.c")
+#UVM_TB_SRCS = $(shell find $(abspath $(UVM_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp" -or -name "*.cc" -or -name "*.c")
+UVM_TB_SRCS=$(UVM_TB_DIR)/gcd_pkg.sv $(UVM_TB_DIR)/tb.sv $(UVM_TB_DIR)/transaction/interface.sv $(UVM_TB_DIR)/clib/check.cpp
 UVM_TB_INC = +incdir+$(abspath $(UVM_TB_DIR))
 
 #sv tb specific
@@ -35,7 +36,7 @@ CPP_TB_INC = -I$(CPP_TB_DIR)/include
 # 3, {simulator name}_BIN : simulator binary
 # verilator specific
 VERILATOR_DIR = $(BUILD_DIR)/verilator
-VERILATOR_FLAGS = --trace --timing --threads 8 -O1 --build --exe -cc --top $(TOP) -Mdir $(VERILATOR_DIR) -CFLAGS -std=c++20
+VERILATOR_FLAGS = --trace --timing -j 8 -O1 --build --exe -cc --top $(TOP) -Mdir $(VERILATOR_DIR) -CFLAGS -std=c++20
 VERILATOR_BIN = $(VERILATOR_DIR)/V$(TOP)
 
 # vcs specific

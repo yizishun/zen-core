@@ -1,5 +1,3 @@
-`ifndef ITEM_SV
-`define ITEM_SV
 `define WIDTH 32
 //TODO:modify
 class item extends uvm_sequence_item;
@@ -23,5 +21,3 @@ class item extends uvm_sequence_item;
     super.new(name);
   endfunction
 endclass
-
-`endif
