@@ -5,7 +5,7 @@ SCRIPTS_DIR = ./scripts
 TB_DIR = ./tb/tb-$(DESIGN)
 
 #common files
-VSRCS = $(shell find $(abspath $(RTL_DIR)) -name "*.v" -or -name "*.sv")
+VSRCS = $(shell find $(abspath $(RTL_DIR)) -maxdepth 1 -name "*.v" -or -name "*.sv")
 VCD_FILE = $(BUILD_DIR)/wave.vcd
 FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
@@ -36,6 +36,12 @@ PY_TB_DIR = $(TB_DIR)/python-tb
 PY_TB_SRCS = $(shell find $(abspath $(PY_TB_DIR) -name "*.py"))
 PY_TB_INC =
 
+#chisel tb specific
+CHISEL_TB_DIR = $(TB_DIR)/chisel-tb
+CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)/build) -maxdepth 1 -name "*.v" -or -name "*.sv")
+CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)) -name "*.cpp")
+CHISEL_TB_INC = +incdir+$(abspath $(CHISEL_TB_DIR)/build)
+
 #-------------------simulator specific--------------
 # three type variables
 # 1, {simulator name}_DIR : simulator build directory
@@ -63,17 +69,15 @@ DESIGN := GCD#can be overrided in command line
 # include scripts
 include $(SCRIPTS_DIR)/elaborate.mk
 
-include $(SCRIPTS_DIR)/sim-sv-verilator.mk
+include $(SCRIPTS_DIR)/sim-sv.mk
 
-include $(SCRIPTS_DIR)/sim-sv-vcs.mk
+include $(SCRIPTS_DIR)/sim-cpp.mk
 
-include $(SCRIPTS_DIR)/sim-cpp-verilator.mk
-
-include $(SCRIPTS_DIR)/sim-uvm-vcs.mk
-
-include $(SCRIPTS_DIR)/sim-uvm-verilator.mk
+include $(SCRIPTS_DIR)/sim-uvm.mk
 
 include $(SCRIPTS_DIR)/sim-python.mk
+
+include $(SCRIPTS_DIR)/sim-chisel.mk
 
 vcd: 
 	$(WAVE_VIEWER) $(VCD_FILE) &
@@ -81,8 +85,4 @@ vcd:
 fst:
 	$(WAVE_VIEWER) $(FST_FILE) &
 
-	
-
-sim-chisel-verilator:
-sim-chisel-vcs:
 -include ../Makefile

@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: 2024 Jiuyang Liu <liu@jiuyang.me>
 
 package tb
-
 import chisel3._
 import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
@@ -11,6 +10,7 @@ import chisel3.ltl.{AssertProperty, CoverProperty, Delay, Sequence}
 import chisel3.properties.{AnyClassType, Class, Property}
 import chisel3.util.circt.dpi.{RawClockedNonVoidFunctionCall, RawUnclockedNonVoidFunctionCall}
 import chisel3.util.{Counter, HasExtModuleInline, RegEnable, Valid}
+import rtl._
 
 object GCDTestBenchParameter {
   implicit def rwP: upickle.default.ReadWriter[GCDTestBenchParameter] =
@@ -44,7 +44,7 @@ class GCDTestBenchInterface(parameter: GCDTestBenchParameter) extends Bundle {
 }
 
 @instantiable
-class GCDTestBench(val parameter: GCDTestBenchParameter)
+class TB(val parameter: GCDTestBenchParameter)
     extends FixedIORawModule(new GCDTestBenchInterface(parameter))
     with SerializableModule[GCDTestBenchParameter]
     with ImplicitClock

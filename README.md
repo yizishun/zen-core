@@ -49,3 +49,24 @@ cocotb is useful for small design verification (for example, sub module in a Cor
 
 ## Chisel
 under deveplopment(this should use the main branch chisel to support) (it is not chisel test, it is acually use chisel to write tb and elaborate to verilog/sv)
+
+# Conclusion
+available testbench:
+```shell
+# Init
+git submodule update --init --recursive
+# Elaborate RTL
+make verilog DEIGN=GCD
+# UVM
+sim-uvm-vcs
+sim-uvm-verilator(bugs)
+# SV
+sim-sv-vcs
+sim-sv-verilator(bugs)
+# CPP
+sim-cpp-verilator
+# COCOTB
+sim-python-iverilog
+sim-python-verilator
+# Chisel
+```

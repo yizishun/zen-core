@@ -1,6 +1,6 @@
 #include "VGCD.h"         // Verilator generated header
-#include "verilated.h"    // Verilator core header
-#include "verilated_vcd_c.h" // For waveform generation
+#include <verilated.h>    // Verilator core header
+#include <verilated_vcd_c.h> // For waveform generation
 
 #include <iostream>
 #include <cstdlib>

@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: Unlicense
 // SPDX-FileCopyrightText: 2024 Jiuyang Liu <liu@jiuyang.me>
-package org.chipsalliance.gcd.elaborator
-
 import mainargs._
-import org.chipsalliance.gcd.{GCDTestBench, GCDTestBenchParameter, TestVerbatimParameter}
-import org.chipsalliance.gcd.elaborator.GCDMain.GCDParameterMain
+import rtl._
+import tb._
+import elaborate.Elaborate_GCD._
 import chisel3.experimental.util.SerializableModuleElaborator
 
 object GCDTestBenchMain extends SerializableModuleElaborator {
-  val topName = "GCDTestBench"
+  val topName = "TB"
 
   implicit object PathRead extends TokensReader.Simple[os.Path] {
     def shortName = "path"
@@ -65,7 +64,7 @@ object GCDTestBenchMain extends SerializableModuleElaborator {
     @arg(name = "parameter") parameter:  os.Path,
     @arg(name = "target-dir") targetDir: os.Path = os.pwd
   ) = {
-    val (firrtl, annos) = designImpl[GCDTestBench, GCDTestBenchParameter](os.read.stream(parameter))
+    val (firrtl, annos) = designImpl[TB, GCDTestBenchParameter](os.read.stream(parameter))
     os.write.over(targetDir / s"${topName}.fir", firrtl)
     os.write.over(targetDir / s"${topName}.anno.json", annos)
   }

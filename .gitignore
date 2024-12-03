@@ -20,19 +20,22 @@
 !README.md
 !tb/
 !tb-GCD/
-tb-GCD/python-tb/sim_build
 !constr/
 !config/
 !tb-GCD/uvm-tb/uvm-verilator
 !poetry.lock
 !pyproject.toml
+# build dir
 build/
 verilator_obj_dir
+tb-GCD/python-tb/sim_build
+# dot files
 .vscode/
 .bloop/
 .metals/
 
 # mill
+!.mill-version
 out/
 .bsp/
 .idea/
