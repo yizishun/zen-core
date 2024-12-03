@@ -1,3 +1,6 @@
 [submodule "uvm-verilator"]
 	path = uvm-verilator
 	url = git@github.com:antmicro/uvm-verilator.git
+[submodule "dependencies/chisel"]
+	path = dependencies/chisel
+	url = https://github.com/chipsalliance/chisel.git

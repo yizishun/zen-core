@@ -11,6 +11,7 @@
 package elaborate
 import mainargs._
 import rtl._
+import chisel3.experimental.util.SerializableModuleElaborator
 
 object Elaborate_GCD extends SerializableModuleElaborator {
   val topName = "GCD"
