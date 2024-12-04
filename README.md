@@ -1,6 +1,28 @@
 Digital Design/verify Template
 =======================
 This is a template or framework include digital design and verification
+# Quick Start
+```shell
+# Init
+git submodule update --init --recursive
+# Elaborate RTL
+make verilog DEIGN=GCD
+# UVM
+make sim-uvm-vcs
+make sim-uvm-verilator #(bugs)
+# SV
+make sim-sv-vcs
+make sim-sv-verilator #(bugs)
+# CPP
+make sim-cpp-verilator
+# COCOTB
+make sim-python-iverilog
+make sim-python-verilator
+# Chisel
+make tb-verilog DEIGN=GCD
+make sim-chisel-verilator
+make sim-chisel-vcs #(under deveplopment)
+```
 
 # Design
 This template is originnally built from chisel-playground
@@ -28,45 +50,37 @@ Write TestBench in `tb/tb-{DEIGN}`
 (Before use vcs, make sure you already define `VCS_HOME` and `VERDI_HOME`)
 ## UVM
 uvm support:
-`make sim-uvm-vcs`
-`make sim-uvm-verilator`(have bugs, because verilator is not fully support SystemVerilog, i support it use `uvm-verialtor`)
+```shell
+make sim-uvm-vcs
+make sim-uvm-verilator #(have bugs, because verilator is not fully support SystemVerilog, i support it use `uvm-verialtor`)
+```
 
 ## SV
 Similar to UVM, support:
-`make sim-sv-vcs`
-`make sim-uvm-verilator`(have some dump wave bugs)
+```shell
+make sim-sv-vcs
+make sim-uvm-verilator #(have some dump wave bugs)
+```
 
 ## C++
 Only for verilator:
-`make sim-cpp-verilator`
+```shell
+make sim-cpp-verilator
+```
 
 ## COCOTB
 support lots of simulator:
-`make sim-python-iverilog`
-`make sim-python-verilator`
-`make sim-python-vcs` (not test, dont use)
+```shell
+make sim-python-iverilog
+make sim-python-verilator
+make sim-python-vcs #(not test, dont use)
+```
 cocotb is useful for small design verification (for example, sub module in a Core)
 
 ## Chisel
-under deveplopment(this should use the main branch chisel to support) (it is not chisel test, it is acually use chisel to write tb and elaborate to verilog/sv)
-
-# Conclusion
-available testbench:
+it is acually use chisel to write tb and elaborate to verilog/sv which similar to sv/uvm
 ```shell
-# Init
-git submodule update --init --recursive
-# Elaborate RTL
-make verilog DEIGN=GCD
-# UVM
-sim-uvm-vcs
-sim-uvm-verilator(bugs)
-# SV
-sim-sv-vcs
-sim-sv-verilator(bugs)
-# CPP
-sim-cpp-verilator
-# COCOTB
-sim-python-iverilog
-sim-python-verilator
-# Chisel
+make sim-chisel-verilator
+make sim-chisel-vcs #(under deveplopment)
 ```
+

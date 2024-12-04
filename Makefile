@@ -2,7 +2,9 @@ TOP := TB
 #common DIR
 BUILD_DIR = $(abspath ./build)
 SCRIPTS_DIR = ./scripts
-TB_DIR = ./tb/tb-$(DESIGN)
+TB_DIR = $(abspath ./tb/tb-$(DESIGN))
+#config
+CONFIG_DIR = $(abspath ./config)
 
 #common files
 VSRCS = $(shell find $(abspath $(RTL_DIR)) -maxdepth 1 -name "*.v" -or -name "*.sv")
@@ -38,9 +40,9 @@ PY_TB_INC =
 
 #chisel tb specific
 CHISEL_TB_DIR = $(TB_DIR)/chisel-tb
-CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)/build) -maxdepth 1 -name "*.v" -or -name "*.sv")
-CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)) -name "*.cpp")
-CHISEL_TB_INC = +incdir+$(abspath $(CHISEL_TB_DIR)/build)
+CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)/build) -maxdepth 2 -name "*.v" -or -name "*.sv")
+CHISEL_TB_SRCS += $(shell find $(abspath $(CHISEL_TB_DIR)) -name "*.a")
+CHISEL_TB_INC = +incdir+$(abspath $(CHISEL_TB_DIR)/build) -CFLAGS -I$(abspath $(CHISEL_TB_DIR)/clib/include)
 
 #-------------------simulator specific--------------
 # three type variables
@@ -51,6 +53,8 @@ CHISEL_TB_INC = +incdir+$(abspath $(CHISEL_TB_DIR)/build)
 VERILATOR_DIR = $(BUILD_DIR)/verilator
 VERILATOR_FLAGS = --trace --timing -j 8 -O1 --build --exe -cc --top $(TOP) -Mdir $(VERILATOR_DIR) -CFLAGS -std=c++20
 VERILATOR_BIN = $(VERILATOR_DIR)/V$(TOP)
+
+VERILATOR_HOME = $(shell verilator --getenv VERILATOR_ROOT)
 
 # vcs specific
 VCS_DIR = $(BUILD_DIR)/vcs

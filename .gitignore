@@ -20,6 +20,7 @@
 !README.md
 !tb/
 !tb-GCD/
+!tb/tb-GCD/chisel-tb/clib/json/
 !constr/
 !config/
 !tb-GCD/uvm-tb/uvm-verilator

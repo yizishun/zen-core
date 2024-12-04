@@ -102,6 +102,7 @@ class TB(val parameter: GCDTestBenchParameter)
   val checkRight:        Sequence = lastRequestResult === dut.io.output.bits
   val inputNotValid:     Sequence = dut.io.input.ready && !dut.io.input.valid
 
+  //not supported by verilator
   AssertProperty(
     inputFire |=> inputNotFire.repeatAtLeast(1) ### outputFire,
     label = Some("GCD_ALWAYS_RESPONSE")
@@ -123,6 +124,13 @@ class TB(val parameter: GCDTestBenchParameter)
     inputNotValid,
     label = Some("GCD_COVER_BACK_PRESSURE")
   )
+  //verialtor checker
+  when(dut.io.output.valid && lastRequestResult === dut.io.output.bits){
+    printf("PASS: x = %d, y = %d, result = %d\n", dut.io.input.bits.x, dut.io.input.bits.y, dut.io.output.bits)
+  }.elsewhen(dut.io.output.valid && lastRequestResult =/= dut.io.output.bits){
+    printf("FAIL: x = %d, y = %d, result = %d\n", dut.io.input.bits.x, dut.io.input.bits.y, dut.io.output.bits)
+    stop(cf"""{"event":"SimulationStop","reason": FAIL,"cycle":${simulationTime}}\n""")
+  }
 }
 object TestVerbatimParameter {
   implicit def rwP: upickle.default.ReadWriter[TestVerbatimParameter] =

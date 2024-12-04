@@ -6,8 +6,6 @@ ELABORATE_DIR = $(RTL_DIR)/elaborate
 TB_RTL_DIR = $(CHISEL_TB_DIR)/build
 TB_RTL_LIST = $(TB_RTL_DIR)/filelist.f
 TB_ELABORATE_DIR = $(TB_RTL_DIR)/elaborate
-#config
-CONFIG_DIR = ./config
 #fir files
 FIR_FILES = $(shell find $(abspath $(ELABORATE_DIR)) -name "*.fir")
 TB_FIR_FILES = $(shell find $(abspath $(TB_ELABORATE_DIR)) -name "*.fir")
