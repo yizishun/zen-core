@@ -21,7 +21,7 @@ WAVE_VIEWER = gtkwave
 UVM_TB_DIR = $(TB_DIR)/uvm-tb
 #UVM_TB_SRCS = $(shell find $(abspath $(UVM_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp" -or -name "*.cc" -or -name "*.c")
 UVM_TB_SRCS += $(shell find $(abspath $(UVM_TB_DIR)) -depth 1 -name "*.v" -or -name "*.sv") #tb and pkgs files
-UVM_TB_DIR += $(shell find $(abspath $(UVM_TB_DIR)) -name "interface.v") # interface can not in pkgs
+UVM_TB_SRCS += $(shell find $(abspath $(UVM_TB_DIR)) -name "interface.v") # interface can not in pkgs
 UVM_TB_SRCS += $(shell find $(abspath $(UVM_TB_DIR)) -name "*.c" or -name "*.cc" -or -name "*.cpp") # dpi files
 UVM_TB_INC = +incdir+$(abspath $(UVM_TB_DIR))
 

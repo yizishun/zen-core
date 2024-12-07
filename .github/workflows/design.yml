@@ -1,0 +1,29 @@
+name: Gernerate Verilog
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  verilog-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install basic dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make git
+      - name: Init git submodules
+        run: git submodule update --init --recursive
+      - name: Install mill
+        uses: jodersky/setup-mill@master
+        with:
+          mill-version: 0.11.12
+      - name: Install circt
+        uses: circt/install-circt@v1.1.1
+        with:
+          version: 'firtool-1.87.0'
+      - name: Run some flow
+        run: |
+          make verilog DESIGN=GCD

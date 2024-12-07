@@ -3,6 +3,7 @@
 !*/
 !Makefile
 !*.mk
+!*.yml
 !*.scala
 !*.[cSh]
 !*.v
