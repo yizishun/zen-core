@@ -20,7 +20,9 @@ WAVE_VIEWER = gtkwave
 #uvm tb specific
 UVM_TB_DIR = $(TB_DIR)/uvm-tb
 #UVM_TB_SRCS = $(shell find $(abspath $(UVM_TB_DIR)) -name "*.v" -or -name "*.sv" -or -name "*.cpp" -or -name "*.cc" -or -name "*.c")
-UVM_TB_SRCS=$(UVM_TB_DIR)/gcd_pkg.sv $(UVM_TB_DIR)/tb.sv $(UVM_TB_DIR)/transaction/interface.sv $(UVM_TB_DIR)/clib/check.cpp
+UVM_TB_SRCS += $(shell find $(abspath $(UVM_TB_DIR)) -depth 1 -name "*.v" -or -name "*.sv") #tb and pkgs files
+UVM_TB_DIR += $(shell find $(abspath $(UVM_TB_DIR)) -name "interface.v") # interface can not in pkgs
+UVM_TB_SRCS += $(shell find $(abspath $(UVM_TB_DIR)) -name "*.c" or -name "*.cc" -or -name "*.cpp") # dpi files
 UVM_TB_INC = +incdir+$(abspath $(UVM_TB_DIR))
 
 #sv tb specific
