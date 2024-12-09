@@ -3,7 +3,7 @@ VERLATOR_INC = $(VERILATOR_HOME)/include
 CSRCS = $(shell find $(CHISEL_TB_DIR)/clib -maxdepth 1 -name "*.cpp")
 OBJS = $(CSRCS:.cpp=.o)  # 将所有 .cpp 文件替换为对应的 .o 文件
 LIBC_A = $(CHISEL_TB_DIR)/clib/libchisel.a
-CXXFLAGS = -std=c++11 -fPIC -O2 -I$(CHISEL_TB_DIR)/clib/json/include -I$(CHISEL_TB_DIR)/clib/include -I$(VERLATOR_INC) -DCONFIG_FILE='"$(CONFIG_DIR)/$(DESIGN)TestBench.json"'
+CXXFLAGS = -std=c++11 -fPIC -O2 -I$(DEP_DIR)/json/include -I$(CHISEL_TB_DIR)/clib/include -I$(VERLATOR_INC) -DCONFIG_FILE='"$(CONFIG_DIR)/$(DESIGN)TestBench.json"'
 
 libchisel: $(LIBC_A)
 $(LIBC_A): $(OBJS)

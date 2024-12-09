@@ -1,9 +1,9 @@
-[submodule "uvm-verilator"]
-	path = uvm-verilator
+[submodule "dependencies/uvm-verilator"]
+	path = dependencies/uvm-verilator
 	url = https://github.com/antmicro/uvm-verilator.git
 [submodule "dependencies/chisel"]
 	path = dependencies/chisel
 	url = https://github.com/chipsalliance/chisel.git
-[submodule "tb/tb-gcd/chisel-tb/clib/json"]
-	path = tb/tb-gcd/chisel-tb/clib/json
+[submodule "dependencies/json"]
+	path = dependencies/json
 	url = https://github.com/nlohmann/json.git

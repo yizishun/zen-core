@@ -3,6 +3,7 @@ TOP := TB
 BUILD_DIR = $(abspath ./build)
 SCRIPTS_DIR = ./scripts
 TB_DIR = $(abspath ./tb/tb-$(DESIGN))
+DEP_DIR = $(abspath ./dependencies)
 #config
 CONFIG_DIR = $(abspath ./config)
 
