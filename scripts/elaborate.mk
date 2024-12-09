@@ -17,14 +17,17 @@ FIRTOOL_OPTION = \
   --lowering-options=verifLabels,omitVersionComment,disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
   --strip-debug-info
 
+.PHONY: config
 config:
 	mkdir -p $(CONFIG_DIR)
 	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) config --width 32 --useAsyncReset true --target-dir config
 
+.PHONY: fir
 fir: config
 	mkdir -p $(ELABORATE_DIR)
 	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(ELABORATE_DIR) --parameter ./config/$(DESIGN).json
 
+.PHONY: verilog
 verilog: fir
 	mkdir -p $(RTL_DIR)
 	for file in $(FIR_FILES); do \
@@ -34,10 +37,12 @@ verilog: fir
 	done
 	find $(RTL_DIR) -maxdepth 1 -name "*.sv" -type f -print > $(RTL_LIST)
 
+.PHONY: tb-fir
 tb-fir:
 	mkdir -p $(TB_ELABORATE_DIR)
 	mill -i elaborateTB.runMain $(DESIGN)TestBenchMain design --target-dir $(TB_ELABORATE_DIR) --parameter ./config/$(DESIGN)TestBench.json
 
+.PHONY: tb-verilog
 tb-verilog: tb-fir
 	mkdir -p $(TB_RTL_DIR)
 	for file in $(TB_FIR_FILES); do \

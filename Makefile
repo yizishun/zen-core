@@ -86,16 +86,18 @@ include $(SCRIPTS_DIR)/sim-python.mk
 
 include $(SCRIPTS_DIR)/sim-chisel.mk
 
+.PHONY: vcd
 vcd: 
 	$(WAVE_VIEWER) $(VCD_FILE) &
 
+.PHONY: fst
 fst:
 	$(WAVE_VIEWER) $(FST_FILE) &
 
+.PHONY: init
 init:
 	@git submodule update --init --recursive
 	@echo "submdule init -- done"
 	@poetry install --no-root
 	@echo "poetry install -- done"
-
 -include ../Makefile

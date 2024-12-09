@@ -19,6 +19,7 @@ COCOTB_MAKEFILE = $(shell poetry run cocotb-config --makefiles)/Makefile.sim
 
 export SIM TOPLEVEL TOPLEVEL_LANG VERILOG_SOURCES MODULE EXTRA_ARGS SIM_BUILD WAVES
 
+.PHONY: sim-python-iverilog sim-python-verilator sim-python-vcs
 sim-python-iverilog: verilog
 	$(eval SIM=icarus)
 	$(eval SIM_BUILD = $(IVERILOG_DIR))

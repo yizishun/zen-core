@@ -1,3 +1,4 @@
+.PHONY: sim-sv-vcs sim-sv-verilator
 sim-sv-vcs:
 	$(call git_commit, "sim RTL")
 	mkdir -p $(VCS_DIR)

@@ -1,4 +1,4 @@
-
+.PHONY: sim-uvm-verilator
 sim-uvm-vcs:
 	$(call git_commit, "sim RTL")
 	mkdir -p $(VCS_DIR)
@@ -14,6 +14,7 @@ sim-uvm-vcs:
 # now it has serveral disadvantage
 # 1, have to recompile each time you run(i dont know how to get cache)
 # 2, verialtor can't fully support sv/uvm
+.PHONY: sim-uvm-verilator
 sim-uvm-verilator: $(UVM_TB_SRCS) $(VSRCS) verilog
 	UVM_HOME=$(DEP_DIR)/uvm-verilator/src \
 	TB_DIR=$(UVM_TB_DIR) \

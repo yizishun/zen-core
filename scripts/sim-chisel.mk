@@ -5,6 +5,7 @@ OBJS = $(CSRCS:.cpp=.o)  # 将所有 .cpp 文件替换为对应的 .o 文件
 LIBC_A = $(CHISEL_TB_DIR)/clib/libchisel.a
 CXXFLAGS = -std=c++11 -fPIC -O2 -I$(DEP_DIR)/json/include -I$(CHISEL_TB_DIR)/clib/include -I$(VERLATOR_INC) -DCONFIG_FILE='"$(CONFIG_DIR)/$(DESIGN)TestBench.json"'
 
+.PHONY: libchisel
 libchisel: $(LIBC_A)
 $(LIBC_A): $(OBJS)
 	@echo "+ $@"
@@ -15,10 +16,12 @@ $(LIBC_A): $(OBJS)
 	@echo "+ $< -> $@"
 	g++ $(CXXFLAGS) -c $< -o $@
 
+.PHONY: cleanlibchisel
 cleanlibchisel:
 	rm -f $(LIBC_A)
 
 # sim target -----------------------
+.PHONY: sim-chisel-verilator
 sim-chisel-verilator: $(LIBC_A) $(CSRCS) tb-verilog
 	mkdir -p $(VERILATOR_DIR)
 	verilator \
@@ -27,6 +30,7 @@ sim-chisel-verilator: $(LIBC_A) $(CSRCS) tb-verilog
 		$(CHISEL_TB_SRCS)
 	$(VERILATOR_BIN)
 
+.PHONY: sim-chisel-ncsim
 sim-chisel-vcs:
 	mkdir -p $(VCS_DIR)
 	mkdir -p $(VCS_OBJDIR)
