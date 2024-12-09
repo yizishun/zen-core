@@ -92,4 +92,10 @@ vcd:
 fst:
 	$(WAVE_VIEWER) $(FST_FILE) &
 
+init:
+	@git submodule update --init --recursive
+	@echo "submdule init -- done"
+	@poetry install --no-root
+	@echo "poetry install -- done"
+
 -include ../Makefile

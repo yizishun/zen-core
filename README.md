@@ -4,7 +4,7 @@ This is a template or framework include digital design and verification
 # Quick Start
 ```shell
 # Init
-git submodule update --init --recursive
+make init
 # Elaborate RTL
 make verilog DEIGN=GCD
 # UVM
