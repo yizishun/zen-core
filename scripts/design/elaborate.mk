@@ -6,7 +6,7 @@ FIR_DIR = $(ELABORATE_DIR)/fir
 MLIR_DIR = $(ELABORATE_DIR)/mlir
 FIR_FILES = $(shell find $(abspath $(FIR_DIR)) -name "*.fir")
 #tb
-TB_RTL_DIR = $(CHISEL_TB_DIR)/build
+TB_RTL_DIR = $(TB_DIR)/build
 TB_RTL_LIST = $(TB_RTL_DIR)/filelist.f
 TB_ELABORATE_DIR = $(TB_RTL_DIR)/elaborate
 TB_FIR_DIR = $(TB_ELABORATE_DIR)/fir

@@ -7,21 +7,23 @@ This is a template or framework include digital design and verification
 make init
 # Elaborate RTL
 make verilog DEIGN=GCD
+# Create dpi-lib
+make dpi-lib DEIGN=GCD TBLANG=xxx
 # UVM
-make sim-uvm-vcs
-make sim-uvm-verilator #(bugs)
+make sim DESIGN=GCD TBLANG=uvm SIM=vcs
+make sim DESIGN=GCD TBLANG=uvm SIM=verilator #(bugs)
 # SV
-make sim-sv-vcs
-make sim-sv-verilator #(bugs)
+make sim DESIGN=GCD TBLANG=sv SIM=vcs
+make sim DESIGN=GCD TBLANG=sv SIM=verilator #(bugs)
 # CPP
-make sim-cpp-verilator
+make sim DESIGN=GCD TBLANG=cpp SIM=verilator
 # COCOTB
-make sim-python-iverilog
-make sim-python-verilator
+make sim DESIGN=GCD TBLANG=cocotb SIM=icarus
+make sim DESIGN=GCD TBLANG=cocotb SIM=verilator
 # Chisel
 make tb-verilog DEIGN=GCD
-make sim-chisel-verilator
-make sim-chisel-vcs #(under deveplopment)
+make sim DESIGN=GCD TBLANG=chisel SIM=verilator #(bugs)
+make sim DESIGN=GCD TBLANG=chisel SIM=vcs
 ```
 
 # Design
@@ -33,7 +35,7 @@ So, Digital design is use chisel HDL language
 * Write module parameter in `./config`, in json format. And the file name is corresponding module name which will be elaborated
 ## Elaborate Chisel
 * Write corresponding(top level) module elaborate code in `./elaborateRTL`
-* Naming the elaborate class `Elaborate_{module name}`(pls read the `./script/elaborate.mk` to know why)
+* Naming the elaborate class `Elaborate_{module name}`(pls read the `./script/design/elaborate.mk` to know why)
 * Use serializableElaborate extend your class 
 * Other modify pls refer `./elaborate/Elaborate_gcd.scala` (actually you can just relace `GCD` to your module name, and change the impl)
 * Finally, use `make verilog` to get the verilog, use `make fir` to get the firrtl
@@ -43,44 +45,9 @@ You can override the variable DESIGN in command line to elaborate and verify dif
 # Verify
 The template support lots of testbench framework(language) and lots of simulator
 
-For corresponding target, use `make sim-{tb}-{simulator}` to run
+For corresponding target, set `TBLANG` and `SIM`
 
 Write TestBench in `tb/tb-{DEIGN}`
+Write dpi-c in `tb/tb-{DEIGN}/{TBLANG}-tb/dpi`
 
 (Before use vcs, make sure you already define `VCS_HOME` and `VERDI_HOME`)
-## UVM
-uvm support:
-```shell
-make sim-uvm-vcs
-make sim-uvm-verilator #(have bugs, because verilator is not fully support SystemVerilog, i support it use `uvm-verialtor`)
-```
-
-## SV
-Similar to UVM, support:
-```shell
-make sim-sv-vcs
-make sim-uvm-verilator #(have some dump wave bugs)
-```
-
-## C++
-Only for verilator:
-```shell
-make sim-cpp-verilator
-```
-
-## COCOTB
-support lots of simulator:
-```shell
-make sim-python-iverilog
-make sim-python-verilator
-make sim-python-vcs #(not test, dont use)
-```
-cocotb is useful for small design verification (for example, sub module in a Core)
-
-## Chisel
-it is acually use chisel to write tb and elaborate to verilog/sv which similar to sv/uvm
-```shell
-make sim-chisel-verilator
-make sim-chisel-vcs #(under deveplopment)
-```
-
