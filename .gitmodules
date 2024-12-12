@@ -7,3 +7,6 @@
 [submodule "dependencies/json"]
 	path = dependencies/json
 	url = https://github.com/nlohmann/json.git
+[submodule "dependencies/difftest"]
+	path = dependencies/difftest
+	url = https://github.com/OpenXiangShan/difftest.git

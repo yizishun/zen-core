@@ -7,6 +7,7 @@ import mill.scalalib.TestModule.Utest
 import mill.util.Jvm
 import coursier.maven.MavenRepository
 import $file.dependencies.chisel.build
+import $file.dependencies.difftest.build
 trait HasChisel
   extends ScalaModule {
   // Define these for building chisel from source
@@ -70,6 +71,13 @@ trait MyModule extends ScalaModule with HasChisel{
   )
 }
 
+//xiangshan difftest
+object difftest extends millbuild.dependencies.difftest.build.CommonDiffTest {
+  def crossValue: String = "6.6.0"
+
+  override def millSourcePath = os.pwd / "dependencies" /"difftest"
+}
+
 object rtl extends MyModule {
 }
 
@@ -80,7 +88,7 @@ object elaborateRTL extends MyModule {
 
 object tb extends MyModule {
   override def millSourcePath: Path = os.pwd / "tb" / "tb-gcd" /"chisel-tb"
-  def moduleDeps = Seq(rtl)
+  def moduleDeps = Seq(rtl) ++ Seq(difftest)
 }
 
 object elaborateTB extends MyModule {
