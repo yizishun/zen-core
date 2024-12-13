@@ -25,10 +25,14 @@ config:
 	mkdir -p $(CONFIG_DIR)
 	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) config --width 32 --useAsyncReset true --target-dir config
 
+.PHONY: formatjson
+formatjson:
+	find config/ -name "*.json" -exec sh -c 'jq . "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ {} \;
+
 .PHONY: fir
 fir:
 	mkdir -p $(FIR_DIR)
-	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(FIR_DIR) --parameter ./config/$(DESIGN).json
+	mill -i elaborateRTL.runMain elaborate.$(DPATH)Elaborate_$(DESIGN) design --target-dir $(FIR_DIR) --parameter $(CONFIG_FILE)
 
 .PHONY: verilog
 verilog: fir

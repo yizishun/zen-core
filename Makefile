@@ -5,6 +5,7 @@ SCRIPTS_DIR = $(abspath ./scripts)
 TB_DIR = $(abspath ./tb/tb-$(DESIGN)/$(TBLANG)-tb)
 DEP_DIR = $(abspath ./dependencies)
 CONFIG_DIR = $(abspath ./config)
+CONFIG_FILE = $(shell find $(CONFIG_DIR) -name "$(DESIGN).json")
 
 #common files
 VCD_FILE = $(BUILD_DIR)/wave.vcd
@@ -13,6 +14,7 @@ WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
 DESIGN := GCD
+DPATH :=
 TBLANG := chisel
 SIM := verilator
 

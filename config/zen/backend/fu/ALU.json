@@ -1,0 +1,9 @@
+{
+  "width": 32,
+  "useAsyncReset": true,
+  "hasOf": true,
+  "hasZf": true,
+  "hasNf": true,
+  "hasCf": true,
+  "analysisTiming": true
+}
