@@ -28,7 +28,7 @@ trait HasChisel
       "-Xcheckinit"
     )
   )
-
+ 
   override def scalacPluginClasspath: T[Agg[PathRef]] = T(super.scalacPluginClasspath() ++ chiselPluginJar())
 
   // Define these for building chisel from ivy

@@ -6,6 +6,7 @@ TB_DIR = $(abspath ./tb/tb-$(DESIGN)/$(TBLANG)-tb)
 DEP_DIR = $(abspath ./dependencies)
 CONFIG_DIR = $(abspath ./config)
 CONFIG_FILE = $(shell find $(CONFIG_DIR) -name "$(DESIGN).json")
+SYN_DIR = $(abspath ./syn_timing)
 
 #common files
 VCD_FILE = $(BUILD_DIR)/wave.vcd
@@ -22,6 +23,8 @@ SIM := verilator
 include $(SCRIPTS_DIR)/design/elaborate.mk
 
 include $(SCRIPTS_DIR)/sim/sim.mk
+
+include $(SCRIPTS_DIR)/syn/yosys-sta.mk
 
 #common targets
 .PHONY: vcd
