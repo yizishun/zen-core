@@ -1,0 +1,13 @@
+{
+"aluParameter": {
+    "width": 32,
+    "useAsyncReset": false,
+    "hasOf": true,
+    "hasZf": true,
+    "hasNf": true,
+    "hasCf": true,
+    "analysisTiming": false
+  },
+  "isSBY": true,
+  "isVCF": false
+}

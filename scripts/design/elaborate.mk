@@ -12,13 +12,15 @@ TB_ELABORATE_DIR = $(TB_RTL_DIR)/elaborate
 TB_FIR_DIR = $(TB_ELABORATE_DIR)/fir
 TB_MLIR_DIR = $(TB_ELABORATE_DIR)/mlir
 TB_FIR_FILES = $(shell find $(abspath $(TB_FIR_DIR)) -name "*.fir")
+TB_CONFIG_FILE = $(shell find $(CONFIG_DIR) -name "$(DESIGN)TestBench.json")
+FM_CONFIG_FILE = $(shell find $(CONFIG_DIR) -name "$(DESIGN)Formal.json")
 #firtool options
 FIRTOOL_OPTION = \
 	-O=debug \
 	--split-verilog \
 	--preserve-values=all \
-  --lowering-options=verifLabels,omitVersionComment,disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
-  --strip-debug-info
+  --lowering-options=omitVersionComment,disallowPackedStructAssignments,disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
+  --strip-debug-info \
 
 .PHONY: config
 config:
@@ -42,12 +44,26 @@ verilog: fir
 .PHONY: tb-fir
 tb-fir:
 	mkdir -p $(TB_FIR_DIR)
-	mill -i elaborateTB.runMain $(DESIGN)TestBenchMain design --target-dir $(TB_FIR_DIR) --parameter ./config/$(DESIGN)TestBench.json
+	mill -i elaborateTB.runMain $(DESIGN)TestBenchMain design --target-dir $(TB_FIR_DIR) --parameter $(TB_CONFIG_FILE)
 
 .PHONY: tb-verilog
 tb-verilog: tb-fir
 	$(call fir2rtl,$(TB_FIR_DIR),$(TB_FIR_FILES),$(TB_MLIR_DIR),$(TB_RTL_DIR))
 	find $(TB_RTL_DIR) -maxdepth 1 -name "*.sv" -type f -print > $(TB_RTL_LIST)
+
+RUN_SCRIPT := 1
+.PHONY: fpv-fir
+fpv-fir:
+	mkdir -p $(TB_FIR_DIR)
+	mill -i elaborateTB.runMain $(DESIGN)FormalMain design --target-dir $(TB_FIR_DIR) --parameter $(FM_CONFIG_FILE)
+ifeq ($(RUN_SCRIPT), 1)
+	python3 $(SCRIPTS_DIR)/design/strip_layer.py $(TB_FIR_DIR)/$(DESIGN)Formal.fir $(TB_FIR_DIR)/$(DESIGN)Formal.fir
+endif
+
+.PHONY: fpv-verilog
+fpv-verilog: fpv-fir
+	$(call fir2rtl,$(TB_FIR_DIR),$(TB_FIR_FILES),$(TB_MLIR_DIR),$(TB_RTL_DIR))
+	find $(TB_RTL_DIR) -name "*.sv" -type f -print > $(TB_RTL_LIST)
 
 define fir2rtl
 	mkdir -p $(3)

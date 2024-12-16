@@ -20,12 +20,24 @@
 !build.mill
 !README.md
 !tb/
-!tb-GCD/
 !constr/
 !config/
+!tb-GCD/uvm-tb/uvm-verilator
 !poetry.lock
 !pyproject.toml
-!dependencies/*
+#tb
+tb/tb-GCD/*
+!tb/tb-GCD/python-tb/
+!tb/tb-GCD/chisel-tb/
+!tb/tb-GCD/uvm-tb/
+!tb/tb-GCD/cpp-tb/
+!tb/tb-GCD/sv-tb/
+!tb/tb-GCD/gcd.sby
+!*.sby
+
+tb/tb-alu/ALU_basic
+vcst_rtdb
+vcst_rtdb.bak
 # build dir
 build/
 verilator_obj_dir

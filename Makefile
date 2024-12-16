@@ -1,4 +1,5 @@
 TOP := TB
+ROOT := $(shell pwd)
 #common DIR
 BUILD_DIR = $(abspath ./build)
 SCRIPTS_DIR = $(abspath ./scripts)
@@ -14,10 +15,15 @@ FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
-DESIGN := GCD
-DPATH :=
+DESIGN := ALU
+DPATH := zen.backend.fu.
 TBLANG := chisel
 SIM := verilator
+
+$(info DESIGN: $(DESIGN))
+$(info TB_DIR: $(TB_DIR))
+
+export DESIGN
 
 # include scripts
 include $(SCRIPTS_DIR)/design/elaborate.mk
@@ -25,6 +31,8 @@ include $(SCRIPTS_DIR)/design/elaborate.mk
 include $(SCRIPTS_DIR)/sim/sim.mk
 
 include $(SCRIPTS_DIR)/syn/yosys-sta.mk
+
+include $(SCRIPTS_DIR)/formal/formal.mk
 
 #common targets
 .PHONY: vcd

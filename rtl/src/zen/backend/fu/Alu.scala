@@ -64,7 +64,7 @@ class ALU(val parameter: ALUParameter)
   val func = io.func.withReg(parameter.analysisTiming)
 
   val shamt = src2(4, 0).asUInt
-  val reAddSub = src1 +& Mux((func.asUInt)(0), -src2, src2)
+  val reAddSub = src1 +& Mux((func.asUInt)(0), ~src2 + 1.U, src2)
   val reAnd = src1 & src2
   val reOr = src1 | src2
   val reXor = src1 ^ src2

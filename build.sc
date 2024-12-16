@@ -73,7 +73,7 @@ trait MyModule extends ScalaModule with HasChisel{
 
 //xiangshan difftest
 object difftest extends millbuild.dependencies.difftest.build.CommonDiffTest {
-  def crossValue: String = "6.6.0"
+  def crossValue: String = "chisel"
 
   override def millSourcePath = os.pwd / "dependencies" /"difftest"
 }
@@ -87,10 +87,10 @@ object elaborateRTL extends MyModule {
 }
 
 object tb extends MyModule {
-  override def millSourcePath: Path = os.pwd / "tb" / "tb-gcd" /"chisel-tb"
-  def moduleDeps = Seq(rtl) ++ Seq(difftest)
+  override def millSourcePath: Path = os.pwd / "tb" / "chisel-tb"
+  def moduleDeps = super.moduleDeps ++ Seq(rtl)
 }
 
 object elaborateTB extends MyModule {
-  def moduleDeps = Seq(tb) ++ Seq(rtl) ++ Seq(elaborateRTL)
+  def moduleDeps = super.moduleDeps ++ Seq(tb) ++ Seq(rtl) ++ Seq(elaborateRTL)
 }

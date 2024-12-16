@@ -1,0 +1,20 @@
+[tasks]
+basic bmc
+basic default
+
+[options]
+bmc:
+mode bmc
+depth 10
+
+[engines]
+smtbmc
+
+[script]
+read_verilog -sv /Users/yizishun/zen-core/tb/tb-ALU/chisel-tb/build/ALU.sv
+read_verilog -sv /Users/yizishun/zen-core/tb/tb-ALU/chisel-tb/build/ALUFormal.sv
+prep -top ALUFormal
+
+[files]
+/Users/yizishun/zen-core/tb/tb-ALU/chisel-tb/build/
+

@@ -26,4 +26,4 @@ jobs:
           version: 'firtool-1.87.0'
       - name: Run some flow
         run: |
-          make verilog DESIGN=GCD
+          make verilog
