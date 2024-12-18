@@ -8,6 +8,6 @@
     "hasCf": true,
     "analysisTiming": false
   },
-  "isSBY": true,
-  "isVCF": false
+  "isSBY": false,
+  "isVCF": true
 }
