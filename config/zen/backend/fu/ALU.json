@@ -5,5 +5,5 @@
   "hasZf": true,
   "hasNf": true,
   "hasCf": true,
-  "analysisTiming": false
+  "analysisTiming": true
 }
