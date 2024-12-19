@@ -7,7 +7,7 @@ TB_DIR = $(abspath ./tb/tb-$(DESIGN)/$(TBLANG)-tb)
 DEP_DIR = $(abspath ./dependencies)
 CONFIG_DIR = $(abspath ./config)
 CONFIG_FILE = $(shell find $(CONFIG_DIR) -name "$(DESIGN).json")
-SYN_DIR = $(abspath ./syn_timing)
+SYN_DIR = $(abspath ./backend)
 
 #common files
 VCD_FILE = $(BUILD_DIR)/wave.vcd
@@ -30,7 +30,7 @@ include $(SCRIPTS_DIR)/design/elaborate.mk
 
 include $(SCRIPTS_DIR)/sim/sim.mk
 
-include $(SCRIPTS_DIR)/syn/yosys-sta.mk
+include $(SCRIPTS_DIR)/backend/yosys-sta.mk
 
 include $(SCRIPTS_DIR)/formal/formal.mk
 

@@ -10,6 +10,6 @@
 [submodule "dependencies/difftest"]
 	path = dependencies/difftest
 	url = https://github.com/OpenXiangShan/difftest.git
-[submodule "syn_timing/asic/yosys-sta"]
-	path = syn_timing/asic/yosys-sta
+[submodule "backend/asic/yosys-sta"]
+	path = backend/asic/yosys-sta
 	url = https://github.com/OSCPU/yosys-sta.git
