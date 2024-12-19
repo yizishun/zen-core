@@ -1,6 +1,7 @@
 #rtl
 RTL_DIR = $(BUILD_DIR)/rtl
 RTL_LIST = $(RTL_DIR)/filelist.f
+RTL_FILES = $(shell find $(abspath $(RTL_DIR)) -maxdepth 1 -name "*.sv")
 ELABORATE_DIR = $(RTL_DIR)/elaborate
 FIR_DIR = $(ELABORATE_DIR)/fir
 MLIR_DIR = $(ELABORATE_DIR)/mlir

@@ -1,4 +1,4 @@
-YOSYS_DIR = $(SYN_DIR)/asic/yosys-sta
+YOSYS_DIR := $(SYN_DIR)/asic/yosys-sta
 
 sta:
 	make -C $(YOSYS_DIR) sta \
