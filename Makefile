@@ -15,8 +15,7 @@ FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
-DESIGN := ALU
-DPATH := zen.backend.fu.
+DESIGN := SimpleBus2AXI4Converter
 TBLANG := chisel
 SIM := verilator
 

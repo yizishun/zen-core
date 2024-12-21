@@ -1,6 +1,5 @@
-package elaborate.zen.backend.fu
+package elaborate
 import mainargs._
-import rtl._
 import chisel3.experimental.util.SerializableModuleElaborator
 import zen.backend.fu._
 

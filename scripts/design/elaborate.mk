@@ -35,7 +35,7 @@ formatjson:
 .PHONY: fir
 fir:
 	mkdir -p $(FIR_DIR)
-	mill -i elaborateRTL.runMain elaborate.$(DPATH)Elaborate_$(DESIGN) design --target-dir $(FIR_DIR) --parameter $(CONFIG_FILE)
+	mill -i elaborateRTL.runMain elaborate.Elaborate_$(DESIGN) design --target-dir $(FIR_DIR) --parameter $(CONFIG_FILE)
 
 .PHONY: verilog
 verilog: fir
