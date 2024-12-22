@@ -1,7 +1,7 @@
 import mainargs._
 import zen.backend.fu._
 import tb._
-import elaborate.zen.backend.fu.Elaborate_ALU._
+import elaborate.Elaborate_ALU._
 import chisel3.experimental.util.SerializableModuleElaborator
 
 object ALUFormalMain extends SerializableModuleElaborator {

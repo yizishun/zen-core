@@ -15,7 +15,7 @@ FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
-DESIGN := SimpleBus2AXI4Converter
+DESIGN := IFU
 TBLANG := chisel
 SIM := verilator
 
@@ -37,7 +37,7 @@ include $(SCRIPTS_DIR)/formal/formal.mk
 #common targets
 .PHONY: vcd
 vcd: 
-	$(WAVE_VIEWER) $(VCD_FILE) &
+	$(WAVE_VIEWER) $(VCD_FILE) $(BUILD_DIR)/save.gtkw &
 
 .PHONY: fst
 fst:

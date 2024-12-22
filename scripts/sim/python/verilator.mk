@@ -1,4 +1,4 @@
-sim: verilog
+sim:
 	$(eval SIM=verilator)
 	$(eval SIM_BUILD = $(VERILATOR_DIR))
 	$(eval EXTRA_ARGS += -CFLAGS -std=c++20)
