@@ -59,7 +59,7 @@ class SimpleBusReqBundle(
     p"wmask = 0x${Hexadecimal(wmask)}, wdata = 0x${Hexadecimal(wdata)}"
   }
 
-  def apply(addr: UInt, cmd: UInt, size: UInt, wdata: UInt, wmask: UInt, user: UInt = 0.U, id: UInt = 0.U) = {
+  def send(addr: UInt, cmd: UInt, size: UInt, wdata: UInt, wmask: UInt, user: UInt = 0.U, id: UInt = 0.U) = {
     this.addr := addr
     this.cmd := cmd
     this.size := size
@@ -67,6 +67,8 @@ class SimpleBusReqBundle(
     this.wmask := wmask
     this.id.map(_ := id)
   }
+
+  def get() = (addr, cmd, size, wdata, wmask)
 
   def isRead() = !cmd(0)
   def isWrite() = cmd(0)
@@ -86,6 +88,14 @@ class SimpleBusRespBundle(
   val id = if (idBits > 0) Some(Output(UInt(idBits.W))) else None
 
   override def toPrintable: Printable = p"rdata = ${Hexadecimal(rdata)}, cmd = ${cmd}"
+
+  def send(rdata: UInt, cmd: UInt, id: UInt = 0.U) = {
+    this.rdata := rdata.asUInt
+    this.cmd := cmd
+    this.id.map(_ := id)
+  }
+
+  def get() = (rdata, cmd)
 
   def isReadLast = cmd === SimpleBusCmd.readLast
   def isWriteResp = cmd === SimpleBusCmd.writeResp

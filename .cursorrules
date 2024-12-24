@@ -1,0 +1,47 @@
+{
+  "description": "Chisel based RISC-V core development with verification frameworks, following latest Chisel guidelines",
+  "rules": [
+    {
+      "context": "Chisel Code Development",
+      "instructions": [
+        "Always adhere to Chisel coding best practices and latest guidelines from the main branch of Chisel.",
+        "Ensure modular design to facilitate testability and scalability."
+      ]
+    },
+    {
+      "context": "RISC-V Architecture",
+      "instructions": [
+        "Follow RISC-V ISA specifications closely.",
+        "Implement verification plans to test compliance with the RISC-V standards."
+      ]
+    },
+    {
+      "context": "Verification with Cocotb",
+      "instructions": [
+        "Utilize Cocotb for Python-based testbenches.",
+        "Integrate Python models for coverage and assertions."
+      ]
+    },
+    {
+      "context": "Verification with UVM and SV",
+      "instructions": [
+        "Employ UVM for creating robust verification environments.",
+        "Utilize SystemVerilog for TB development."
+      ]
+    },
+    {
+      "context": "Simulation with Verilator and VCS",
+      "instructions": [
+        "Use Verilator for fast open-source simulation of SystemVerilog models.",
+        "Utilize VCS for comprehensive coverage analysis and simulation."
+      ]
+    },
+    {
+      "context": "C++ and Simulation",
+      "instructions": [
+        "Interface C++ with Verilator-generated models for performance optimization.",
+        "Use GDB or similar tools for debugging C++ simulations."
+      ]
+    }
+  ]
+}

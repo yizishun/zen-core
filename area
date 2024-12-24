@@ -9,5 +9,7 @@ SimpleBus2AXI4Converter
 IFU
 646.114000
 703.836000
+644.518000
 
-ICache
+ICache 4*96
+4722.83 + 1851.36
