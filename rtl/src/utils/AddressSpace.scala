@@ -48,7 +48,6 @@ class AddressSpace(config: AddressSpaceConfig) {
       (addr ^ region.startAddr.U)(addr.getWidth-1, bits) === 0.U
     }.foldLeft(false.B)(_ || _)
   }
-
 }
 
 object AddressSpace {

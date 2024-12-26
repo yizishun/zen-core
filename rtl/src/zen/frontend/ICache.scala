@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
 import chisel3.util._
+import chisel3.probe._
 import utils._
 import bus.simplebus._
 
@@ -25,7 +26,7 @@ case class ICacheParameter(
   addressSpace: AddressSpaceConfig
 ) extends SerializableModuleParameter {
   require(memParameter.way == way, "way of memParameter must be the same as way of ICache")
-  require(memParameter.memSize == totalSize, "memSize of memParameter must be the same as totalSize of ICache")
+  require(memParameter.set == totalSize / (way * lineSize), "set of memParameter must be the same as totalSize of ICache")
 }
 
 sealed trait HasCacheCons {
@@ -84,9 +85,7 @@ class ICacheInterface(implicit override val parameter: ICacheParameter) extends 
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
   val in = Flipped(new SimpleBus())
   val out = new SimpleBus()
-  val fencei = Flipped(ValidIO(new Bundle {
-    val is_fencei = Bool()
-  }))
+  val fencei = Flipped(Decoupled())
 }
 
 /** Hardware Implementation of [[ICache]] */
@@ -110,11 +109,18 @@ class ICache(implicit val parameter: ICacheParameter)
   val metaMem = MemWithPort(parameter.memParameter, new MetaBundle)
   val dataMem = MemWithPort(parameter.memParameter, new DataBundle)
   val isInSdram = AddressSpace(parameter.addressSpace).isInRegion(io.in.req.bits.addr, "SDRAM")
-  io.in <> DontCare
-  io.out <> DontCare
-  io.fencei <> DontCare
-  metaMem <> DontCare
-  dataMem <> DontCare
+  metaMem.clock := io.clock
+  dataMem.clock := io.clock
+  metaMem.reset := io.reset
+  dataMem.reset := io.reset
+
+  // fencei控制逻辑
+  val fencing = io.fencei.valid
+  val fenceCounter = Counter(Sets)
+  
+  // 计数器控制
+  io.fencei.ready := false.B
+  when(fencing) { io.fencei.ready := fenceCounter.inc() } //when wrap, ready is high
 
   //although it is multiple cycle, but i assume the input from IFU is stable, so i can save 32 bits reg area
   //or you can use reg and name the same name as below
@@ -124,22 +130,26 @@ class ICache(implicit val parameter: ICacheParameter)
   //check
   val metaReadWay = metaMem.read(getDataIdx(addr), 0)
   val hitOneHot = VecInit(metaReadWay.map(meta => meta.valid && meta.tag === addr.asTypeOf(addrDecode).tag)).asUInt
-  val hit = hitOneHot.orR
-  val miss = !hit
+  val cacheHit = hitOneHot.orR && isInSdram
+  val cacheMiss = !cacheHit && isInSdram
+  val uncached = !isInSdram
+  val hit = cacheHit
+  val miss = cacheMiss || uncached
   
   //interactive with in and out
   val handshake = Wire(Vec(4, Bool()))
   val finish = handshake(1)
   val resetHandshake = WireInit(Bool(), finish)
-  handshake(0) := Handshake.slave(io.in.req, true.B, resetHandshake)
-  handshake(1) := Handshake.master(io.in.resp, handshake(0) && hit, resetHandshake)
+  // 在fencing时阻塞新请求
+  handshake(0) := Handshake.slave(io.in.req, !fencing, resetHandshake)
+  handshake(1) := Handshake.master(io.in.resp, handshake(0) && hit || (uncached && handshake(3)), resetHandshake)
   handshake(2) := Handshake.master(io.out.req, handshake(0) && miss, resetHandshake)
-  handshake(3) := Handshake.simpleBusSlave(io.out.resp, handshake(2), resetHandshake, burst = true)
+  handshake(3) := Handshake.simpleBusSlave(io.out.resp, handshake(2), resetHandshake, burst = uncached)
 
   //data path
   io.out.req.bits.send(
     addr = addr,
-    cmd = SimpleBusCmd.readBurst,
+    cmd = Mux(uncached, SimpleBusCmd.read, SimpleBusCmd.readBurst),
     size = size,
     wdata = 0.U,
     wmask = 0.U
@@ -153,25 +163,31 @@ class ICache(implicit val parameter: ICacheParameter)
   //write to data mem
   val wdata = Wire(new DataBundle())
   wdata.data := DontCare
-  when(io.out.resp.fire) {
+  when(io.out.resp.fire && !uncached) {
     wdata.data(Counter(io.out.resp.fire, LineBeats)._1) := rdata
   }
   dataMem.write(
     address = getDataIdx(addr),
     data = wdata,
     waymask = wayMask,
-    enable = handshake(3),
+    enable = io.out.resp.fire && !uncached,
     portIdx = 0
   )
   //write to meta mem
   val meta = Wire(new MetaBundle())
-  meta.tag := addr.asTypeOf(addrDecode).tag
-  meta.valid := true.B
+  meta.tag := Mux(fencing, 0.U, addr.asTypeOf(addrDecode).tag)  // fencing时tag可以是任意值
+  meta.valid := !fencing  // fencing时直接写无效
+  
+  // fence.i复用metaMem写口
+  val metaWriteAddr = Mux(fencing, fenceCounter.value, getDataIdx(addr))
+  val metaWriteWaymask = Mux(fencing, VecInit(Seq.fill(Ways)(true.B)), wayMask)
+  val metaWriteEnable = Mux(fencing, true.B, io.out.resp.fire && !uncached)
+  
   metaMem.write(
-    address = getDataIdx(addr),
+    address = metaWriteAddr,
     data = meta,
-    waymask = wayMask,
-    enable = handshake(3),
+    waymask = metaWriteWaymask,
+    enable = metaWriteEnable,
     portIdx = 0
   )
   //write the rdata to the out.resp
@@ -179,9 +195,10 @@ class ICache(implicit val parameter: ICacheParameter)
   val wayData = Wire(new DataBundle())
   val dataReadWay = dataMem.read(getDataIdx(addr), 0)
   wayData := dataReadWay(PriorityEncoder(hitOneHot))
-  respData := wayData.data(addr.asTypeOf(addrDecode).wordIndex)
+  respData := Mux(uncached, rdata, wayData.data(addr.asTypeOf(addrDecode).wordIndex))
   io.in.resp.bits.send(
     rdata = respData,
     cmd = SimpleBusCmd.readLast,
   )
+
 }

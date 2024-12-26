@@ -20,11 +20,27 @@ object Handshake {
     handshake || io.fire
   }
 
-  def simpleBusSlave(io: DecoupledIO[SimpleBusRespBundle], ready: Bool, reset: Bool, burst: Boolean = false): Bool = {
+  def simpleBusSlave(io: DecoupledIO[SimpleBusRespBundle], ready: Bool, reset: Bool, burst: Bool = false.B): Bool = {
     val handshake = RegInit(false.B)
+    val fire = Wire(Bool())
+    when(burst) {
+      fire := io.fire && io.bits.isReadLast
+    } otherwise {
+      fire := io.fire
+    }
     io.ready := ready && !handshake
-    handshake := handshake | (if(burst) io.fire else io.fire && io.bits.isReadLast)
+    handshake := handshake | fire
     when(reset) { handshake := false.B }
-    handshake || (if(burst) io.fire else io.fire && io.bits.isReadLast)
+    handshake || fire
+  }
+
+  def simpleBusMaster(io: DecoupledIO[SimpleBusRespBundle], valid: Bool, reset: Bool, burst: Boolean = false, burstLen: Int = 0): Bool = {
+    val handshake = RegInit(false.B)
+    val (burstCounter, burstDone) = Counter(burst.B && io.fire, burstLen)
+    io.valid := valid && !handshake
+    io.bits.cmd := Mux(burstDone, SimpleBusCmd.readLast, SimpleBusCmd.read)
+    handshake := handshake | (if(burst) burstDone && io.fire else io.fire)
+    when(reset) { handshake := false.B }
+    handshake || (if(burst) burstDone && io.fire else io.fire)
   }
 }

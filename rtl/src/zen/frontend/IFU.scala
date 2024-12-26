@@ -3,6 +3,7 @@ package zen.frontend
 import chisel3._
 import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
+import chisel3.probe._
 import chisel3.util._
 import utils._
 import bus.simplebus._

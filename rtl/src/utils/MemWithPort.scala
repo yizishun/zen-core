@@ -7,7 +7,7 @@ import chisel3.util._
 
 /** Parameter of [[MemWithPort]] that can be serialized */
 case class MemWithPortParameter(
-    memSize: Int,
+    set: Int,
     way: Int,
     numReadPorts: Int,
     numWritePorts: Int,
@@ -50,7 +50,7 @@ class MemWithPortInterface[T <: Data](tpe: T)(implicit val parameter: MemWithPor
   val clock = Input(Clock())
   val reset = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
   
-  private val addrWidth = log2Up(parameter.memSize)
+  private val addrWidth = log2Up(parameter.set)
   val readPorts = Vec(parameter.numReadPorts, new MemReadPort(tpe, addrWidth, parameter.way))
   val writePorts = Vec(parameter.numWritePorts, new MemWritePort(tpe, addrWidth, parameter.way))
   val readwritePorts = Vec(parameter.numReadwritePorts, new MemReadWritePort(tpe, addrWidth, parameter.way))
@@ -101,7 +101,7 @@ class MemWithPort[T <: Data](tpe: T)(implicit val parameter: MemWithPortParamete
   override protected def implicitReset: Reset = io.reset
   override val desiredName: String = s"MemWithPort_${parameter.way}Way_${parameter.numReadPorts}R${parameter.numWritePorts}W${parameter.numReadwritePorts}RW"
 
-  require(parameter.memSize > 0, "Memory size must be positive")
+  require(parameter.set > 0, "Memory size must be positive")
   require(parameter.way > 0, "Number of ways must be positive")
   require(parameter.numReadPorts >= 0, "Number of read ports must be non-negative")
   require(parameter.numWritePorts >= 0, "Number of write ports must be non-negative")
@@ -113,7 +113,7 @@ class MemWithPort[T <: Data](tpe: T)(implicit val parameter: MemWithPortParamete
 
   // Create the memory array for each way with UInt type
   val wordType = UInt(tpe.getWidth.W)
-  val mem = Mem(parameter.memSize, Vec(parameter.way, wordType))
+  val mem = Mem(parameter.set, Vec(parameter.way, wordType))
 
   // Connect read ports with combinational read
   io.readPorts.foreach { port =>
@@ -126,8 +126,9 @@ class MemWithPort[T <: Data](tpe: T)(implicit val parameter: MemWithPortParamete
   // Connect write ports
   io.writePorts.foreach { port =>
     when(port.enable) {
+      val mask = port.waymask
       val writeData = VecInit(Seq.fill(parameter.way)(port.data.asUInt))
-      mem.write(port.address, writeData, port.waymask)
+      mem.write(port.address, writeData, mask, io.clock)
     }
   }
 

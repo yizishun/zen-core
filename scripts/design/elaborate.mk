@@ -20,7 +20,7 @@ FIRTOOL_OPTION = \
 	-O=debug \
 	--split-verilog \
 	--preserve-values=all \
-  --lowering-options=omitVersionComment,disallowPackedStructAssignments,disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
+  --lowering-options=omitVersionComment,disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
   --strip-debug-info \
 
 .PHONY: config
