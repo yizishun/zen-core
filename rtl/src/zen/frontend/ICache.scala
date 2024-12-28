@@ -101,11 +101,6 @@ class ICache(implicit val parameter: ICacheParameter)
   override protected def implicitReset: Reset = io.reset
   override val desiredName: String = s"ICache"
 
-  // Add dontTouch to prevent IO optimization
-  dontTouch(io.in)
-  dontTouch(io.out)
-  dontTouch(io.fencei)
-
   val metaMem = MemWithPort(parameter.memParameter, new MetaBundle)
   val dataMem = MemWithPort(parameter.memParameter, new DataBundle)
   val isInSdram = AddressSpace(parameter.addressSpace).isInRegion(io.in.req.bits.addr, "SDRAM")
@@ -130,11 +125,9 @@ class ICache(implicit val parameter: ICacheParameter)
   //check
   val metaReadWay = metaMem.read(getDataIdx(addr), 0)
   val hitOneHot = VecInit(metaReadWay.map(meta => meta.valid && meta.tag === addr.asTypeOf(addrDecode).tag)).asUInt
-  val cacheHit = hitOneHot.orR && isInSdram
-  val cacheMiss = !cacheHit && isInSdram
   val uncached = !isInSdram
-  val hit = cacheHit
-  val miss = cacheMiss || uncached
+  val hit = hitOneHot.orR
+  val miss = !hit
   
   //interactive with in and out
   val handshake = Wire(Vec(4, Bool()))
@@ -142,8 +135,8 @@ class ICache(implicit val parameter: ICacheParameter)
   val resetHandshake = WireInit(Bool(), finish)
   // 在fencing时阻塞新请求
   handshake(0) := Handshake.slave(io.in.req, !fencing, resetHandshake)
-  handshake(1) := Handshake.master(io.in.resp, handshake(0) && hit || (uncached && handshake(3)), resetHandshake)
-  handshake(2) := Handshake.master(io.out.req, handshake(0) && miss, resetHandshake)
+  handshake(1) := Handshake.master(io.in.resp, handshake(0) && (hit || (uncached && handshake(3))), resetHandshake)
+  handshake(2) := Handshake.master(io.out.req, handshake(0) && (miss || uncached), resetHandshake)
   handshake(3) := Handshake.simpleBusSlave(io.out.resp, handshake(2), resetHandshake, burst = uncached)
 
   //data path

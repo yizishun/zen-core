@@ -70,11 +70,11 @@ class MemWithPortInterface[T <: Data](tpe: T)(implicit val parameter: MemWithPor
     writePorts(portIdx).enable := enable
   }
 
-  def readwrite(
+  def readWrite(
       address: UInt,
       isWrite: Bool,
       writeData: T,
-      waymask: UInt,
+      waymask: Vec[Bool],
       portIdx: Int = 0
   ): Vec[T] = {
     require(portIdx >= 0 && portIdx < parameter.numReadwritePorts, s"Read/write port index $portIdx out of range")
@@ -83,7 +83,7 @@ class MemWithPortInterface[T <: Data](tpe: T)(implicit val parameter: MemWithPor
     readwritePorts(portIdx).writeData := writeData
     readwritePorts(portIdx).waymask := waymask
     readwritePorts(portIdx).enable := true.B
-    readwritePorts(portIdx).readData
+    readwritePorts(portIdx).readData.asTypeOf(Vec(parameter.way, tpe))
   }
 }
 
@@ -136,11 +136,16 @@ class MemWithPort[T <: Data](tpe: T)(implicit val parameter: MemWithPortParamete
   io.readwritePorts.foreach { port =>
     port.readData := DontCare
     when(port.enable) {
+      val rdwrPort = mem(port.address)
       when(port.isWrite) {
         val writeData = VecInit(Seq.fill(parameter.way)(port.writeData.asUInt))
-        mem.write(port.address, writeData, port.waymask)
+        port.waymask.zipWithIndex.foreach { case (waymask, idx) =>
+          when(waymask) {
+            rdwrPort(idx) := writeData(idx)
+          }
+        }
       }.otherwise {
-        port.readData := mem.read(port.address).map(_.asTypeOf(tpe))
+        port.readData := rdwrPort.map(_.asTypeOf(tpe))
       }
     }
   }

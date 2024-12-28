@@ -78,7 +78,7 @@ class ZenTestBench(val parameter: ZenTestBenchParameter)
     val finish = handshake(1)
     val resetHandshake = WireInit(Bool(), finish)
     handshake(0) := Handshake.slave(imem.req, true.B, resetHandshake)
-    handshake(1) := Handshake.simpleBusMaster(imem.resp, handshake(0), resetHandshake, burst = true, burstLen = 2)
+    handshake(1) := Handshake.simpleBusMaster(imem.resp, RegNext(handshake(0)), resetHandshake, burst = true, burstLen = 2)
     imem.resp.bits.rdata := simulationTime(parameter.zenParameter.ifuParameter.width - 1, 0).asUInt
   }
   force(dut.io.ifuProbe.out_ready, true.B)

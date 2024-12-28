@@ -15,7 +15,7 @@ FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
-DESIGN := Zen
+DESIGN := Clint
 TBLANG := chisel
 SIM := verilator
 
