@@ -30,7 +30,8 @@ include $(SCRIPTS_DIR)/design/elaborate.mk
 include $(SCRIPTS_DIR)/sim/sim.mk
 
 include $(SCRIPTS_DIR)/backend/asic/yosys-sta.mk
-include $(SCRIPTS_DIR)/backend/fpga/copy.mk
+
+include $(SCRIPTS_DIR)/backend/fpga/fpga.mk
 
 include $(SCRIPTS_DIR)/formal/formal.mk
 
