@@ -17,3 +17,6 @@ ICache + IFU
 
 clint
 552.775MHZ
+
+LSU
+3012.783MHZ

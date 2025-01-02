@@ -2,7 +2,7 @@
   "ifuParameter": {
     "width": 32,
     "useAsyncReset": false,
-    "ysyxsoc": true,
+    "resetPC": "0x30000000",
     "usePerformanceProbe": false
   },
   "icacheParameter": {

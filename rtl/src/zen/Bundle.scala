@@ -28,3 +28,11 @@ class IFUOutIO(xlen: Int) extends Bundle{
 
   def get = (inst, pc)
 }
+
+class FunctionIO(xlen: Int, fuWidth: Int) extends Bundle{
+  val in = Flipped(Decoupled(new Bundle{
+    val func = UInt(fuWidth.W)
+    val src = Vec(2, UInt(xlen.W))
+  }))
+  val out = Decoupled(UInt(xlen.W))
+}
