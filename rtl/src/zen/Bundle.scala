@@ -36,3 +36,25 @@ class FunctionIO(xlen: Int, fuWidth: Int) extends Bundle{
   }))
   val out = Decoupled(UInt(xlen.W))
 }
+
+class ReadyWriteBackIO(xlen: Int) extends Bundle{
+  val rfWen = Output(Bool())
+  val rfDest = Output(UInt(5.W))
+}
+
+class WriteBackIO(xlen: Int) extends ReadyWriteBackIO(xlen){
+  val rfWdata = Output(UInt(xlen.W))
+}
+
+class IssueIO(xlen: Int) extends Bundle{
+  val readyWriteBack = new ReadyWriteBackIO(xlen)
+  val fu = Output(UInt(2.W))
+  val func = Output(UInt(4.W))
+  val src = Output(Vec(2, UInt(xlen.W)))
+  val wdata = Output(UInt(xlen.W))
+}
+
+class ForwardIO(xlen: Int) extends Bundle{
+  val wb = new WriteBackIO(xlen)
+  val fu = Output(UInt(2.W))
+}

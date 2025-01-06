@@ -1,7 +1,7 @@
 package zen.backend.fu
 
 import chisel3._
-import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
+import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate, Definition}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
 import chisel3.probe.{define, Probe, ProbeValue}
 import chisel3.util._
@@ -56,15 +56,6 @@ class LSU(val parameter: LSUParameter)
 
   val (func, addr, wdata) = (io.in.bits.func, io.in.bits.src(0) +& io.in.bits.src(1), io.wdata)
 
-  def access(valid: Bool, src1: UInt, src2: UInt, wdata: UInt, func: UInt): UInt = {
-    this.io.in.valid := valid
-    this.io.in.bits.func := func
-    this.io.in.bits.src(0) := src1
-    this.io.in.bits.src(1) := src2
-    this.io.wdata := wdata
-    io.out.bits
-  }
-
   val handshake = Wire(Vec(4, Bool()))
   val finish = handshake(3)
   val resetHandshake = WireInit(false.B)
@@ -113,5 +104,19 @@ class LSU(val parameter: LSUParameter)
       "b101".U -> Cat(rdataVec(addr(1, 0) + 1.U), rdataVec(addr(1, 0))).pad(parameter.width)
     ))
     result
+  }
+}
+
+object LSU {
+  def apply(parameter: LSUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, wdata: UInt, func: UInt): Instance[LSU] = {
+    val lsu = Instantiate(new LSU(parameter))
+    lsu.io.clock := clock
+    lsu.io.reset := reset
+    lsu.io.in.valid := valid
+    lsu.io.in.bits.src(0) := src1
+    lsu.io.in.bits.src(1) := src2
+    lsu.io.wdata := wdata
+    lsu.io.in.bits.func := func
+    lsu
   }
 }

@@ -1,7 +1,7 @@
 package zen.backend.fu
 
 import chisel3._
-import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
+import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate, Definition}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
 import chisel3.probe.{define, Probe, ProbeValue}
 import chisel3.util.{DecoupledIO, Valid, MuxLookup, Fill}
@@ -69,14 +69,6 @@ class ALU(val parameter: ALUParameter)
   val src2 = io.in.bits.src(1).withReg(parameter.analysisTiming)
   val func = io.in.bits.func.withReg(parameter.analysisTiming)
 
-  def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
-    this.io.in.valid := valid
-    this.io.in.bits.src(0) := src1
-    this.io.in.bits.src(1) := src2
-    this.io.in.bits.func := func
-    io.out.bits
-  }
-
   val shamt = src2(4, 0).asUInt
   val isAdderSub = AluOp.isAdd1(func)
   val reAddSub = (src1 +& (src2 ^ Fill(parameter.width, isAdderSub))) + isAdderSub
@@ -109,4 +101,17 @@ class ALU(val parameter: ALUParameter)
   // Handshake
   io.out.valid := io.in.valid
   io.in.ready := io.out.ready
+}
+
+object ALU {
+  def apply(parameter: ALUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt): Instance[ALU] = {
+    val alu = Instantiate(new ALU(parameter))
+    alu.io.clock := clock
+    alu.io.reset := reset
+    alu.io.in.valid := valid
+    alu.io.in.bits.src(0) := src1
+    alu.io.in.bits.src(1) := src2
+    alu.io.in.bits.func := func
+    alu
+  }
 }

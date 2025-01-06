@@ -1,7 +1,7 @@
 package zen.backend.fu
 
 import chisel3._
-import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate}
+import chisel3.experimental.hierarchy.{instantiable, public, Instance, Instantiate, Definition}
 import chisel3.experimental.{SerializableModule, SerializableModuleParameter}
 import chisel3.probe.{define, Probe, ProbeValue}
 import chisel3.util._
@@ -49,13 +49,6 @@ class CSR(val parameter: CSRParameter)
   override protected def implicitReset: Reset = io.reset
 
   val (func, src1, csrAddr) = (io.in.bits.func, io.in.bits.src(0), io.in.bits.src(1)(11, 0))
-  def access(valid: Bool, src1: UInt, src2: UInt, func: UInt): UInt = {
-    this.io.in.valid := valid
-    this.io.in.bits.func := func
-    this.io.in.bits.src(0) := src1
-    this.io.in.bits.src(1) := src2
-    io.out.bits
-  }
 
   val mstatus = RegInit(0x1800.U(parameter.width.W))
   val mtvec = RegInit(0.U(parameter.width.W))
@@ -80,4 +73,17 @@ class CSR(val parameter: CSRParameter)
 
   io.out.bits := rdata
 
+}
+
+object CSR {
+  def apply(parameter: CSRParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt): Instance[CSR] = {
+    val csr = Instantiate(new CSR(parameter))
+    csr.io.clock := clock
+    csr.io.reset := reset  
+    csr.io.in.valid := valid
+    csr.io.in.bits.src(0) := src1
+    csr.io.in.bits.src(1) := src2
+    csr.io.in.bits.func := func
+    csr
+  }
 }

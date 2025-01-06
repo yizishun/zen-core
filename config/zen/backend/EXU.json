@@ -1,0 +1,21 @@
+{
+  "width": 32,
+  "useAsyncReset": true,
+  "alu": {
+    "width": 32,
+    "useAsyncReset": true,
+    "hasOf": true,
+    "hasZf": true,
+    "hasNf": true,
+    "hasCf": true,
+    "analysisTiming": false
+  },
+  "csr": {
+    "width": 32,
+    "useAsyncReset": true
+  },
+  "lsu": {
+    "width": 32,
+    "useAsyncReset": true
+  }
+}
