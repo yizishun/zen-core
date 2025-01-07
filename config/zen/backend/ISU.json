@@ -1,0 +1,8 @@
+{
+  "width": 32,
+  "useAsyncReset": true,
+  "rf": {
+    "width": 32,
+    "regNum": 16
+  }
+}

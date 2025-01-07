@@ -43,7 +43,7 @@ class EXUInterface(parameter: EXUParameter) extends Bundle {
   val out = Decoupled(new WriteBackIO(parameter.width))
   val dmem = new SimpleBus()
   val isFlush = Input(Bool())
-  val forward = Decoupled(new ForwardIO(parameter.width))
+  val forward = new ForwardIO(parameter.width)
 }
 
 //TODO: Flush Branch 
@@ -96,7 +96,7 @@ class EXU(val parameter: EXUParameter)
                              Mux(io.in.bits.fu === FU.LSU, lsu.io.out.bits, alu.io.out.bits))
 
   //forward
-  io.forward.bits.wb := io.out.bits
-  io.forward.bits.fu := io.in.bits.fu
+  io.forward.wb := io.out.bits
+  io.forward.fu := io.in.bits.fu
   io.forward.valid := exeDone
 }

@@ -16,6 +16,7 @@ case class RFParameter(
 
 class RF(parameter: RFParameter) {
   val rf = Mem(parameter.regNum, UInt(parameter.width.W))
+  //val rf = RegInit(VecInit(Seq.fill(parameter.regNum)(0.U(parameter.width.W))))
 
   def read(addr: UInt): UInt = {
     Mux(addr === 0.U, 0.U, rf(addr))
@@ -26,7 +27,7 @@ class RF(parameter: RFParameter) {
   }
 }
 
-//learn from nutshell
+//copy from nutshell
 class ScoreBoard(parameter: RFParameter) {
   val busy = RegInit(0.U(parameter.regNum.W))
   def isBusy(idx: UInt): Bool = busy(idx)

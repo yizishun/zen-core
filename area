@@ -1,3 +1,4 @@
+5444(exu,wbu) + 764(clint) + 4917(ifu,icache) + 211(toaxi) + 7349.846000(isu)
 ALU
 1820
 1677.396000
@@ -32,6 +33,7 @@ EXU
 WBU
 
 ISU
+7349.846000
 
 IDU
 
