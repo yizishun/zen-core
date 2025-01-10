@@ -13,9 +13,12 @@ jobs:
       - name: Install basic dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y make git
-      - name: Init git submodules
-        run: git submodule update --init --recursive
+          sudo apt-get install -y make git curl python3 python3-pip cmake build-essential ruby-asciidoctor
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo 'export PATH="$HOME/.local/bin:$PATH"' >> $GITHUB_ENV
+          poetry --version
+      - name: Init
+        run: make init
       - name: Install mill
         uses: jodersky/setup-mill@master
         with:
@@ -24,6 +27,11 @@ jobs:
         uses: circt/install-circt@v1.1.1
         with:
           version: 'firtool-1.87.0'
+      - name: Install Espresso Logic Minimizer
+        run: |
+          curl -L -o espresso https://github.com/chipsalliance/espresso/releases/download/v2.4/x86_64-linux-gnu-espresso
+          chmod +x espresso
+          sudo mv espresso /usr/local/bin/
       - name: Run some flow
         run: |
           make verilog

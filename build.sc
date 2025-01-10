@@ -69,6 +69,7 @@ trait MyModule extends ScalaModule with HasChisel{
     ivy"com.lihaoyi::geny:1.1.1",
     ivy"com.lihaoyi::os-lib:0.9.1"
   )
+  def sources = super.sources() ++ Seq(PathRef(os.pwd / "dependencies" / "rvdecoderdb" / "rvdecoderdb"))
 }
 
 //xiangshan difftest

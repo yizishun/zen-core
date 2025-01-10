@@ -38,7 +38,6 @@ object LSUOp{
 class LSUInterface(parameter: LSUParameter) extends FunctionIO(parameter.width, LSUOp.LSU_LB.getWidth) {
   val clock = Input(Clock())
   val reset = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
-  val wdata = Input(UInt(parameter.width.W))
   val dmem = new SimpleBus()
 }
 
@@ -54,7 +53,7 @@ class LSU(val parameter: LSUParameter)
   override protected def implicitReset: Reset = io.reset
   override val desiredName: String = s"LSU"
 
-  val (func, addr, wdata) = (io.in.bits.func, io.in.bits.src(0) +& io.in.bits.src(1), io.wdata)
+  val (func, addr, wdata) = (io.in.bits.func, io.in.bits.src(0), io.in.bits.src(1))
 
   val handshake = Wire(Vec(4, Bool()))
   val finish = handshake(3)
@@ -106,16 +105,22 @@ class LSU(val parameter: LSUParameter)
     result
   }
 }
-
+/**
+ * in
+ *  src1: src3Addr
+ *  src2: rs2
+ *  func: lsuOp
+ * out
+ *  out: rdata
+ */
 object LSU {
-  def apply(parameter: LSUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, wdata: UInt, func: UInt): Instance[LSU] = {
+  def apply(parameter: LSUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt): Instance[LSU] = {
     val lsu = Instantiate(new LSU(parameter))
     lsu.io.clock := clock
     lsu.io.reset := reset
     lsu.io.in.valid := valid
     lsu.io.in.bits.src(0) := src1
     lsu.io.in.bits.src(1) := src2
-    lsu.io.wdata := wdata
     lsu.io.in.bits.func := func
     lsu
   }

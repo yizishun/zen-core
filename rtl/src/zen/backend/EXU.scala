@@ -17,9 +17,9 @@ object EXUParameter {
 }
 
 object FU {
-  val CSR = 0.U
-  val LSU = 1.U
-  val ALU = 2.U
+  val CSR = "b00".U(2.W)
+  val LSU = "b01".U(2.W)
+  val ALU = "b10".U(2.W)
 
   def isCSR(fu: UInt) = fu === 0.U
   def isLSU(fu: UInt) = fu(0)
@@ -44,9 +44,10 @@ class EXUInterface(parameter: EXUParameter) extends Bundle {
   val dmem = new SimpleBus()
   val isFlush = Input(Bool())
   val forward = new ForwardIO(parameter.width)
+  val targetPC = Valid(new TargetPC(parameter.width))
 }
 
-//TODO: Flush Branch 
+//TODO: Flush
 /** Hardware Implementation of EXU */
 @instantiable
 class EXU(val parameter: EXUParameter)
@@ -69,7 +70,8 @@ class EXU(val parameter: EXUParameter)
     valid = handshake(0) && FU.isALU(io.in.bits.fu), 
     src1 = io.in.bits.src(0), 
     src2 = io.in.bits.src(1), 
-    func = io.in.bits.func)
+    func = io.in.bits.func,
+    brTpe = io.in.bits.brTpe)
   alu.io.out.ready := io.out.ready
   //CSR
   val csr = CSR(parameter.csr, io.clock, io.reset, 
@@ -81,9 +83,8 @@ class EXU(val parameter: EXUParameter)
   //LSU
   val lsu = LSU(parameter.lsu, io.clock, io.reset, 
     valid = handshake(0) && FU.isLSU(io.in.bits.fu), 
-    src1 = io.in.bits.src(0), 
+    src1 = io.in.bits.src3Addr, 
     src2 = io.in.bits.src(1), 
-    wdata = io.in.bits.wdata, 
     func = io.in.bits.func)
   lsu.io.dmem <> io.dmem
   lsu.io.out.ready := io.out.ready
@@ -99,4 +100,8 @@ class EXU(val parameter: EXUParameter)
   io.forward.wb := io.out.bits
   io.forward.fu := io.in.bits.fu
   io.forward.valid := exeDone
+  //redirect pc
+  io.targetPC.bits.pc := Mux(alu.io.targetPC.valid, io.in.bits.src3Addr, 
+                            Mux(csr.io.targetPC.valid, csr.io.targetPC.bits.pc, 0.U)) //多发射的时候肯定要改这里
+  io.targetPC.valid := alu.io.targetPC.valid | csr.io.targetPC.valid
 }

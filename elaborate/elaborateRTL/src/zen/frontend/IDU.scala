@@ -12,23 +12,9 @@ object Elaborate_IDU extends SerializableModuleElaborator {
   }
 
   @main
-  case class IDUParameterMain(
-    @arg(name = "width") width: Int,
-    @arg(name = "useAsyncReset") useAsyncReset: Boolean) {
-    require(width > 0, "width must be a non-negative integer")
-    require(chisel3.util.isPow2(width), "width must be a power of 2")
-    def convert: IDUParameter = IDUParameter(width, useAsyncReset)
-  }
-
-  implicit def IDUParameterMainParser: ParserForClass[IDUParameterMain] =
-    ParserForClass[IDUParameterMain]
-
-  @main
   def config(
-    @arg(name = "parameter") parameter:  IDUParameterMain,
-    @arg(name = "target-dir") targetDir: os.Path = os.pwd
-  ) =
-    os.write.over(targetDir / s"${topName}.json", configImpl(parameter.convert))
+    @arg(name = "parameter") parameter: os.Path
+  ): Unit = ()
 
   @main
   def design(

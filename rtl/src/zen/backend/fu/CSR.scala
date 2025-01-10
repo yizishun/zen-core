@@ -17,8 +17,10 @@ object CSRParameter {
 case class CSRParameter(width: Int, useAsyncReset: Boolean) extends SerializableModuleParameter
 
 object CSROp {
-  def CSR_WRT = 0.U(1.W)
-  def CSR_SET = 1.U(1.W)
+  def CSR_WRT = "b0000".U(4.W)
+  def CSR_SET = "b0001".U(4.W)
+  def CSR_MRET = "b0010".U(4.W)
+  def CSR_ECALL = "b0011".U(4.W)
 }
 
 trait HasCSRCons {
@@ -34,9 +36,9 @@ trait HasCSRCons {
 class CSRInterface(parameter: CSRParameter) extends FunctionIO(parameter.width, CSROp.CSR_WRT.getWidth) {
   val clock  = Input(Clock())
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
+  val targetPC = Valid(new TargetPC(parameter.width))
 }
 
-//TODO: 异常支持
 /** Hardware Implementation of CSR */
 @instantiable
 class CSR(val parameter: CSRParameter)
@@ -56,6 +58,7 @@ class CSR(val parameter: CSRParameter)
   val mcause = RegInit(0.U(parameter.width.W))
   val mvendorid = RegInit("h79737978".U(parameter.width.W))
   val marchid = RegInit(23060171.U(parameter.width.W))
+  //csrrw csrrs
   val mapping = Map(
     RegMap(Mstatus, mstatus),
     RegMap(Mtvec, mtvec),
@@ -65,16 +68,31 @@ class CSR(val parameter: CSRParameter)
     RegMap(Marchid, marchid)
   )
   val rdata = Wire(UInt(parameter.width.W))
-  val wdata = Mux(func === CSROp.CSR_SET, src1 | rdata, src1)
+  val wdata = Mux(func(0), src1 | rdata, src1)
 
-  RegMap.generate(mapping, csrAddr, rdata, csrAddr, io.in.valid, wdata)
+  RegMap.generate(mapping, csrAddr, rdata, csrAddr, io.in.valid && !func(1), wdata)
   io.in.ready := true.B
   io.out.valid := io.in.valid
 
   io.out.bits := rdata
 
+  //ecall mret
+  when(func === CSROp.CSR_ECALL && io.in.valid){ 
+    mepc := src1 
+    mcause := 0x1800.U
+  }
+  io.targetPC.valid := func(1) && io.in.valid
+  io.targetPC.bits := Mux(func(0), mtvec, mepc)
 }
 
+/**
+  * in 
+  *   src1: rs1/pc(ecall)
+  *   src2: csrIndex
+  * out
+  *   out: rdata
+  *   targetpc: mtvec(ecall)/mepc(mret)
+  */
 object CSR {
   def apply(parameter: CSRParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt): Instance[CSR] = {
     val csr = Instantiate(new CSR(parameter))

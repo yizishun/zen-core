@@ -15,7 +15,7 @@ FST_FILE = $(BUILD_DIR)/wave.fst
 WAVE_VIEWER = gtkwave
 
 #-----------override it in command line-----------
-DESIGN := ISU
+DESIGN := IDU
 TBLANG := chisel
 SIM := verilator
 
@@ -46,8 +46,12 @@ fst:
 
 .PHONY: init
 init:
+	@git submodule update --init
+	@git apply patch/change.patch
+	@echo "patch apply -- done"
 	@git submodule update --init --recursive
 	@echo "submdule init -- done"
 	@poetry install --no-root
 	@echo "poetry install -- done"
 -include ../Makefile
+

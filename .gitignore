@@ -16,6 +16,7 @@
 !*.xdc
 !*.tcl
 !*.check
+!*.patch
 !.gitignore
 !.scalafmt.conf
 !build.sc
@@ -60,3 +61,6 @@ test_run_dir/
 !timing
 !area
 !.cursorrules
+!dependencies/*
+
+!patch/*

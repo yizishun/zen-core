@@ -28,8 +28,8 @@ class IFUInterface(parameter: IFUParameter) extends Bundle {
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
   val out = Decoupled(new IFUOutIO(parameter.width))
   val imem = new SimpleBus()
-  val isFlush = Input(Bool())
-  val correctedPC = Input(UInt(parameter.width.W))
+  val isFlush = Output(Vec(4, Bool()))
+  val correctedPC = Flipped(Valid(new TargetPC(parameter.width)))
 }
 
 /** Hardware Implementation of [[IFU]] */
@@ -53,11 +53,12 @@ class IFU(val parameter: IFUParameter)
   // 初始化PC寄存器
   val pcReg = RegInit(parameter.resetPC.U(32.W))
   val snpc = pcReg + 4.U // for future, use branch predictor
-  val npc = Mux(io.isFlush, io.correctedPC, snpc)
+  val npc = Mux(io.correctedPC.valid, io.correctedPC.bits.pc, snpc)
 
   // flush信号寄存器
-  val flush_r = RegNext(io.isFlush)
-  val flush = flush_r || io.isFlush
+  val flush_r = RegNext(io.correctedPC.valid)
+  val flush = flush_r || io.correctedPC.valid
+  io.isFlush := Fill(4, io.correctedPC.valid)
 
   // 握手信号
   val handshake = Wire(Vec(3, Bool()))
@@ -67,7 +68,7 @@ class IFU(val parameter: IFUParameter)
   handshake(0) := Handshake.master(io.imem.req, true.B, resetHandshake)
   handshake(1) := Handshake.slave(io.imem.resp, handshake(0), resetHandshake)
   handshake(2) := Handshake.master(io.out, handshake(1), resetHandshake)
-  val pcUpdate = finish || io.isFlush
+  val pcUpdate = finish || io.correctedPC.valid
 
   // 更新flush信号
   when(flush){

@@ -24,6 +24,23 @@ case class ALUParameter(
   analysisTiming: Boolean
   ) extends SerializableModuleParameter
 
+//uop的复用，branch的类型由BrOp+AluOp共同决定
+object BrOp{
+  val BR_XXX = 0.U(2.W)
+  val BR_J = 1.U(2.W)
+  val BR_BE = 2.U(2.W)
+  val BR_GL = 3.U(2.W)
+
+  import AluOp._
+  def isbeq(br: UInt, aluOp: UInt): Bool = (br === BR_BE) && (aluOp(3)) //ALU_SUB
+  def isbne(br: UInt, aluOp: UInt): Bool = (br === BR_BE) && (!aluOp(3)) //ALU_SUB
+  def isblt(br: UInt, aluOp: UInt): Bool = (br === BR_GL) && (!aluOp(1) && !aluOp(3)) //ALU_CMP
+  def isbge(br: UInt, aluOp: UInt): Bool = (br === BR_GL) && (!aluOp(1) && aluOp(3)) //ALU_CMPU
+  def isbltu(br: UInt, aluOp: UInt): Bool = (br === BR_J) && (aluOp(1)) //ALU_CMPU
+  def isbgeu(br: UInt, aluOp: UInt): Bool = (br === BR_J) && (aluOp(1)) //ALU_CMPU
+  def isJump(br: UInt, aluOp: UInt): Bool = (br === BR_J)
+}
+
 object AluOp {
   def ALU_AND  = "b0000".U(4.W)  // AND
   def ALU_CMP  = "b0001".U(4.W)  // CMP
@@ -44,10 +61,12 @@ object AluOp {
 class ALUInterface(parameter: ALUParameter) extends FunctionIO(parameter.width, 4) {
   val clock  = Input(Clock())
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
+  val brTpe = Input(UInt(2.W))
   val Of: Option[Bool] = if (parameter.hasOf) Some(Output(Bool())) else None
   val Zf: Option[Bool] = if (parameter.hasZf) Some(Output(Bool())) else None
   val Nf: Option[Bool] = if (parameter.hasNf) Some(Output(Bool())) else None
   val Cf: Option[Bool] = if (parameter.hasCf) Some(Output(Bool())) else None
+  val targetPC = Valid(new TargetPC(parameter.width))
 }
 
 /** Hardware Implementation of ALU */
@@ -98,13 +117,34 @@ class ALU(val parameter: ALUParameter)
   io.Zf.foreach(_ := (io.out.bits === 0.U).withReg(parameter.analysisTiming))
   io.Nf.foreach(_ := io.out.bits(parameter.width - 1).withReg(parameter.analysisTiming))
 
+  //branch
+  val cmp = io.out.bits(0)
+  val zf = io.Zf.get
+  io.targetPC.valid := io.in.valid && (
+    (BrOp.isbeq(io.brTpe, func) && zf) ||
+    (BrOp.isbne(io.brTpe, func) && !zf) ||
+    (BrOp.isblt(io.brTpe, func) && cmp) ||
+    (BrOp.isbge(io.brTpe, func) && !cmp) ||
+    (BrOp.isbltu(io.brTpe, func) && cmp) ||
+    (BrOp.isbgeu(io.brTpe, func) && !cmp) ||
+    (BrOp.isJump(io.brTpe, func)))
+
   // Handshake
   io.out.valid := io.in.valid
   io.in.ready := io.out.ready
 }
-
+/**
+ * in
+ *  src1: rs1/pc
+ *  src2: rs2/imm
+ *  func: aluop
+ *  brTpe: branch type
+ * out
+ *  out: alu result
+ *  targetPC: target pc valid
+  */
 object ALU {
-  def apply(parameter: ALUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt): Instance[ALU] = {
+  def apply(parameter: ALUParameter, clock: Clock, reset: Reset, valid: Bool, src1: UInt, src2: UInt, func: UInt, brTpe: UInt): Instance[ALU] = {
     val alu = Instantiate(new ALU(parameter))
     alu.io.clock := clock
     alu.io.reset := reset
