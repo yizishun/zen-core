@@ -82,7 +82,7 @@ class CSR(val parameter: CSRParameter)
     mcause := 0x1800.U
   }
   io.targetPC.valid := func(1) && io.in.valid
-  io.targetPC.bits := Mux(func(0), mtvec, mepc)
+  io.targetPC.bits.pc := Mux(func(0), mtvec, mepc)
 }
 
 /**

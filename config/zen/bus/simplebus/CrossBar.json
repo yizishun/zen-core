@@ -1,0 +1,87 @@
+{
+  "width": 32,
+  "useAsyncReset": true,
+  "nIn": 2,
+  "addressSpace": {
+    "regions": [
+      {
+        "name": "CLINT",
+        "start": "0x02000000",
+        "size": "0x10000",
+        "regionType": "io"
+      },
+      {
+        "name": "SRAM",
+        "start": "0x0F000000",
+        "size": "0x1000000",
+        "regionType": "memory"
+      },
+      {
+        "name": "UART16550",
+        "start": "0x10000000",
+        "size": "0x1000",
+        "regionType": "io"
+      },
+      {
+        "name": "SPI",
+        "start": "0x10001000",
+        "size": "0x1000",
+        "regionType": "io"
+      },
+      {
+        "name": "GPIO",
+        "start": "0x10002000",
+        "size": "0x10",
+        "regionType": "io"
+      },
+      {
+        "name": "PS2",
+        "start": "0x10011000",
+        "size": "0x8",
+        "regionType": "io"
+      },
+      {
+        "name": "MROM",
+        "start": "0x20000000",
+        "size": "0x1000",
+        "regionType": "rom"
+      },
+      {
+        "name": "VGA",
+        "start": "0x21000000",
+        "size": "0x200000",
+        "regionType": "io"
+      },
+      {
+        "name": "Flash",
+        "start": "0x30000000",
+        "size": "0x10000000",
+        "regionType": "rom"
+      },
+      {
+        "name": "ChipLink_MMIO",
+        "start": "0x40000000",
+        "size": "0x40000000",
+        "regionType": "io"
+      },
+      {
+        "name": "PSRAM",
+        "start": "0x80000000",
+        "size": "0x20000000",
+        "regionType": "memory"
+      },
+      {
+        "name": "SDRAM",
+        "start": "0xA0000000",
+        "size": "0x20000000",
+        "regionType": "memory"
+      },
+      {
+        "name": "ChipLink_MEM",
+        "start": "0xC0000000",
+        "size": "0x40000000",
+        "regionType": "memory"
+      }
+    ]
+  }
+}

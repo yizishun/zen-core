@@ -102,5 +102,42 @@
         }
       ]
     }
+  },
+  "iduParameter": {
+    "width": 32,
+    "useAsyncReset": false
+  },
+  "isuParameter": {
+    "width": 32,
+    "useAsyncReset": false,
+    "rf": {
+      "width": 32,
+      "regNum": 16
+    }
+  },
+  "exuParameter": {
+    "width": 32,
+    "useAsyncReset": false,
+    "alu": {
+      "width": 32,
+      "useAsyncReset": false,
+      "hasOf": true,
+      "hasZf": true,
+      "hasNf": true,
+      "hasCf": true,
+      "analysisTiming": false
+    },
+    "csr": {
+      "width": 32,
+      "useAsyncReset": false
+    },
+    "lsu": {
+      "width": 32,
+      "useAsyncReset": false
+    }
+  },
+  "wbuParameter": {
+    "width": 32,
+    "useAsyncReset": false
   }
 } 

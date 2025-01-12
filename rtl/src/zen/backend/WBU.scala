@@ -20,7 +20,8 @@ case class WBUParameter(width: Int, useAsyncReset: Boolean) extends Serializable
 class WBUInterface(parameter: WBUParameter) extends Bundle {
   val clock  = Input(Clock())
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
-  val in = Input(Decoupled(new WriteBackIO(parameter.width)))
+  val in = Flipped(Decoupled(new WriteBackIO(parameter.width)))
+  val isFlush = Input(Bool())
   val wb = Output(new WriteBackIO(parameter.width))
 
 }

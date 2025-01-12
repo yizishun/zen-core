@@ -27,6 +27,7 @@ class IDUInterface(parameter: IDUParameter) extends Bundle {
   val reset  = Input(if (parameter.useAsyncReset) AsyncReset() else Bool())
   val in = Flipped(Decoupled(new IFUOutIO(parameter.width)))
   val out = Decoupled(new DecodeIO(parameter.width))
+  val isFlush = Input(Bool())
 }
 
 //TODO: Flush fence.i
@@ -46,6 +47,7 @@ class IDU(val parameter: IDUParameter)
     */
   val (inst, pc) = (io.in.bits.inst, io.in.bits.pc)
   val possibleInput = PossibleInput(os.pwd / "dependencies" / "rvdecoderdb" / "rvdecoderdbtest" / "jvm" / "riscv-opcodes")
+  //val possibleInput = PossibleInput(os.pwd / "rv_op")
   //possibleInput.map(_.toString).foreach(println) //可以打印出所有输入的指令信息
   val allFields = AllFields()
 

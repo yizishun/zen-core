@@ -128,6 +128,7 @@ class ALU(val parameter: ALUParameter)
     (BrOp.isbltu(io.brTpe, func) && cmp) ||
     (BrOp.isbgeu(io.brTpe, func) && !cmp) ||
     (BrOp.isJump(io.brTpe, func)))
+  io.targetPC.bits := DontCare
 
   // Handshake
   io.out.valid := io.in.valid
@@ -152,6 +153,8 @@ object ALU {
     alu.io.in.bits.src(0) := src1
     alu.io.in.bits.src(1) := src2
     alu.io.in.bits.func := func
+    alu.io.brTpe := brTpe
     alu
   }
 }
+

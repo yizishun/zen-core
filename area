@@ -1,4 +1,4 @@
-5444(exu,wbu) + 764(clint) + 4917(ifu,icache) + 211(toaxi) + 7349.846000(isu)
+5444(exu,wbu) + 764(clint) + 4917(ifu,icache) + 211(toaxi) + 7349.846000(isu) + 295.260000(idu) = 19246.060000
 ALU
 1820
 1677.396000

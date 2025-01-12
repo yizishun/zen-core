@@ -28,7 +28,7 @@ class ISUInterface(parameter: ISUParameter) extends Bundle {
   val out = DecoupledIO(new IssueIO(parameter.width))
   val wb = Flipped(new WriteBackIO(parameter.width))
   val fwd = Flipped(new ForwardIO(parameter.width))
-  val flush = Input(Bool())
+  val isFlush = Input(Bool())
 }
 
 /** Hardware Implementation of [[ISU]] */
@@ -110,6 +110,6 @@ class ISU(val parameter: ISUParameter)
   //更新scoreboard
   val wbClearMask = Mux(io.wb.rfWen && !isDepend(io.wb.rfDest, io.fwd.wb.rfDest, io.fwd.wb.rfWen), sb.mask(io.wb.rfDest), 0.U(parameter.rf.regNum.W))
   val isuFireSetMask = Mux(io.out.fire, sb.mask(rfDest), 0.U)
-  when (io.flush) { sb.update(0.U, Fill(parameter.rf.regNum, 1.U(1.W))) }
+  when (io.isFlush) { sb.update(0.U, Fill(parameter.rf.regNum, 1.U(1.W))) }
   .otherwise { sb.update(isuFireSetMask, wbClearMask) }
 }
